@@ -1,0 +1,14 @@
+{
+  "name": "wff-wilayah-family-fest",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "node --env-file=.env server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "multer": "^2.0.2",
+    "pg": "^8.16.3"
+  }
+}

@@ -1,0 +1,298 @@
+/* ============================================================
+   Classifier tool — functional, data-forward layout.
+   Reuses tokens from styles.css.
+   ============================================================ */
+
+.tool-header {
+  padding: 48px 0 8px;
+}
+
+.tool-header .eyebrow-badge {
+  margin-bottom: 18px;
+}
+
+.tool-header h1 {
+  font-size: clamp(1.9rem, 3.6vw, 2.6rem);
+  max-width: 20ch;
+}
+
+.tool-header p {
+  font-size: 1.02rem;
+  max-width: 58ch;
+}
+
+.tool-body {
+  padding: 24px 0 90px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  padding: 26px;
+}
+
+.panel h2 {
+  font-size: 1.05rem;
+  margin-bottom: 6px;
+}
+
+.panel .sub {
+  font-size: 0.86rem;
+  color: var(--ink-faint);
+  margin-bottom: 18px;
+}
+
+.field-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.field-hint {
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  margin: 4px 0 0;
+}
+
+textarea, input[type="text"] {
+  width: 100%;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.86rem;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-s);
+  padding: 12px 14px;
+  color: var(--ink);
+  resize: vertical;
+}
+
+textarea {
+  min-height: 190px;
+  line-height: 1.5;
+}
+
+textarea:focus, input[type="text"]:focus {
+  outline: 2px solid var(--gold);
+  outline-offset: 1px;
+  border-color: transparent;
+}
+
+.field-group {
+  margin-bottom: 18px;
+}
+
+.file-drop {
+  border: 1.5px dashed var(--line);
+  border-radius: var(--radius-s);
+  padding: 16px;
+  text-align: center;
+  font-size: 0.86rem;
+  color: var(--ink-faint);
+  margin-bottom: 18px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.file-drop:hover, .file-drop.drag {
+  border-color: var(--gold);
+  background: var(--gold-pale);
+}
+
+.file-drop input {
+  display: none;
+}
+
+.panel-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.btn-sm {
+  padding: 9px 16px;
+  font-size: 0.86rem;
+}
+
+.stat-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.stat-box {
+  border-radius: var(--radius-s);
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+}
+
+.stat-box.on-us {
+  background: var(--green-mist);
+  border-color: #c3d2bd;
+}
+
+.stat-box.off-us {
+  background: var(--gold-pale);
+  border-color: var(--gold-soft);
+}
+
+.stat-box .num {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 1.9rem;
+  color: var(--green-deep);
+  line-height: 1;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.stat-box.off-us .num {
+  color: #c73f1f;
+}
+
+.stat-box .label {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.result-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.result-tab {
+  border: 1px solid var(--line);
+  background: var(--bg);
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.result-tab.active {
+  background: var(--green);
+  color: #fdfaf0;
+  border-color: var(--green);
+}
+
+.result-table-wrap {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-s);
+  max-height: 320px;
+  overflow: auto;
+}
+
+table.result-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.82rem;
+}
+
+table.result-table th {
+  position: sticky;
+  top: 0;
+  background: var(--paper);
+  text-align: left;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--line);
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  color: var(--ink-soft);
+  font-size: 0.76rem;
+  text-transform: none;
+}
+
+table.result-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+}
+
+table.result-table tr:last-child td {
+  border-bottom: none;
+}
+
+.empty-state {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--ink-faint);
+  font-size: 0.9rem;
+}
+
+.log-list {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  max-height: 130px;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-s);
+  padding: 10px 12px;
+  background: var(--bg);
+  margin-top: 12px;
+}
+
+.log-list div {
+  padding: 2px 0;
+}
+
+.how-it-works {
+  padding: 8px 0 70px;
+}
+
+.hiw-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.hiw-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  padding: 22px;
+  background: var(--surface);
+}
+
+.hiw-card .step-num {
+  width: 36px;
+  height: 36px;
+  font-size: 0.9rem;
+  margin-bottom: 14px;
+}
+
+.hiw-card h3 {
+  font-size: 1rem;
+}
+
+.hiw-card p {
+  font-size: 0.88rem;
+}
+
+code {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  background: var(--paper);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.86em;
+}
+
+@media (max-width: 860px) {
+  .tool-body {
+    grid-template-columns: 1fr;
+  }
+  .hiw-grid {
+    grid-template-columns: 1fr;
+  }
+}

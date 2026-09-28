@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<!-- This site is hosted on Netlify. Anyone can build and deploy a site
+     like this one for free: https://netlify.new/?utm_campaign=loops&utm_source=ai-legible&utm_medium=owned&utm_content=comment&utm_id=42f6af8c-70a3-493f-b2f6-c647a0901ced
+     Netlify hosting facts for this site: static/SSR served via Netlify Edge. -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Cek ON-US / OFF-US — WFF Tools</title>
+<meta name="description" content="Klasifikasi transaksi ON-US dan OFF-US langsung di browser, cepat dan tanpa upload ke server." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="tool.css" />
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="wrap">
+    <a class='brand' href='/'>
+      <svg class="mark" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="15" stroke="#3730A3" stroke-width="2"/>
+        <path d="M8 20 L13 12 L17 17 L21 9 L25 15" stroke="#FF5A36" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      WFF
+    </a>
+    <ul class="nav-links">
+      <li><a href='/#program'>Program</a></li>
+      <li><a href='/#komunitas'>Komunitas</a></li>
+      <li><a href='/#donasi'>Donasi</a></li>
+      <li><a href='/classifier'><strong>Cek ON-US/OFF-US</strong></a></li>
+    </ul>
+    <a class='nav-cta' href='/#daftar'>Daftar Event</a>
+    <button class="nav-toggle" aria-label="Buka menu">
+      <svg width="18" height="14" viewBox="0 0 18 14" fill="none"><path d="M0 1H18M0 7H18M0 13H18" stroke="#14151E" stroke-width="1.6"/></svg>
+    </button>
+  </div>
+</nav>
+
+<header class="tool-header">
+  <div class="wrap">
+    <span class="eyebrow-badge">Alat internal</span>
+    <h1>Cek transaksi ON-US / OFF-US</h1>
+    <p>Tempel atau unggah file <code>input.txt</code> berformat <code>kode_bank|mpan|nominal</code>, alat ini akan memisahkan transaksi ON-US dan OFF-US langsung di browser kamu — tidak ada data yang dikirim ke server, jadi tetap cepat dan aman dipakai dari HP.</p>
+  </div>
+</header>
+
+<section class="tool-body wrap">
+
+  <div class="panel">
+    <h2>1. Masukkan data</h2>
+    <p class="sub">Satu baris = satu transaksi. Baris kosong otomatis dilewati.</p>
+
+    <div class="file-drop" id="dropZone">
+      <label for="fileInput" style="cursor:pointer;">
+        📄 Klik untuk unggah <code>.txt</code>, atau tarik file ke sini
+      </label>
+      <input type="file" id="fileInput" accept=".txt,.csv" />
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" for="rawInput">Atau tempel langsung</label>
+      <textarea id="rawInput" placeholder="028|123456789012345|100000
+028|111111111111111|250000
+029|987654321098765|300000
+028|987654321098765|500000"></textarea>
+      <p class="field-hint">Format: kode_bank_acquirer | MPAN merchant | nominal</p>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" for="bankCode">Kode bank ON-US</label>
+      <input type="text" id="bankCode" value="028" />
+      <p class="field-hint">Transaksi dianggap ON-US kalau kode bank cocok DAN MPAN ada di daftar merchant di bawah.</p>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" for="merchantList">Daftar MPAN merchant ON-US (satu per baris)</label>
+      <textarea id="merchantList" style="min-height:90px;">123456789012345
+987654321098765</textarea>
+    </div>
+
+    <div class="panel-actions">
+      <button class="btn btn-primary btn-sm" id="processBtn">Proses data</button>
+      <button class="btn btn-ghost btn-sm" id="sampleBtn">Isi contoh</button>
+      <button class="btn btn-ghost btn-sm" id="clearBtn">Bersihkan</button>
+    </div>
+
+    <div class="log-list" id="logList" style="display:none;"></div>
+  </div>
+
+  <div class="panel">
+    <h2>2. Hasil</h2>
+    <p class="sub">Ringkasan dan rincian per transaksi.</p>
+
+    <div class="stat-row">
+      <div class="stat-box on-us">
+        <span class="num" id="countOnUs">0</span>
+        <span class="label">Total ON-US</span>
+      </div>
+      <div class="stat-box off-us">
+        <span class="num" id="countOffUs">0</span>
+        <span class="label">Total OFF-US</span>
+      </div>
+    </div>
+
+    <div class="result-tabs">
+      <button class="result-tab active" data-tab="on-us">ON-US</button>
+      <button class="result-tab" data-tab="off-us">OFF-US</button>
+    </div>
+
+    <div class="result-table-wrap">
+      <table class="result-table" id="resultTable">
+        <thead>
+          <tr><th>Kode Bank</th><th>MPAN</th><th>Nominal</th></tr>
+        </thead>
+        <tbody id="resultBody"></tbody>
+      </table>
+      <div class="empty-state" id="emptyState">Belum ada data diproses. Tempel data lalu klik "Proses data".</div>
+    </div>
+
+    <div class="panel-actions" style="margin-top:16px;">
+      <button class="btn btn-ghost btn-sm" id="downloadOnUs">Unduh result_on_us.txt</button>
+      <button class="btn btn-ghost btn-sm" id="downloadOffUs">Unduh result_off_us.txt</button>
+    </div>
+  </div>
+
+</section>
+
+<section class="how-it-works">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Cara kerja logikanya</h2>
+      <p>Mengikuti aturan yang sama dengan script <code>on_us.py</code> di repo.</p>
+    </div>
+    <div class="hiw-grid">
+      <div class="hiw-card">
+        <div class="step-num">1</div>
+        <h3>Baca tiap baris</h3>
+        <p>Setiap baris dipecah jadi tiga bagian: kode bank acquirer, MPAN merchant, dan nominal transaksi.</p>
+      </div>
+      <div class="hiw-card">
+        <div class="step-num">2</div>
+        <h3>Cocokkan aturan</h3>
+        <p>Kalau kode bank sama dengan kode ON-US <em>dan</em> MPAN ada di daftar merchant, transaksi ditandai ON-US.</p>
+      </div>
+      <div class="hiw-card">
+        <div class="step-num">3</div>
+        <h3>Pisahkan hasil</h3>
+        <p>Sisanya otomatis masuk OFF-US. Total dua-duanya bisa langsung diunduh sebagai file terpisah.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-bottom" style="border-top:1px solid rgba(244,239,224,0.14); padding-top:22px;">
+      <span>© 2026 WFF. Dibuat untuk komunitas paroki.</span>
+      <a href='/' style='color:#B7B8CE; text-decoration:none;'>← Kembali ke beranda</a>
+    </div>
+  </div>
+</footer>
+
+<script src="nav.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
+<script async src="/.netlify/scripts/hud?variant=public" data-nf-variant="public" data-netlify-site-id="42f6af8c-70a3-493f-b2f6-c647a0901ced" data-app-host="app.netlify.com"></script>

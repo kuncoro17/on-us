@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<!-- This site is hosted on Netlify. Anyone can build and deploy a site
+     like this one for free: https://netlify.new/?utm_campaign=loops&utm_source=ai-legible&utm_medium=owned&utm_content=comment&utm_id=42f6af8c-70a3-493f-b2f6-c647a0901ced
+     Netlify hosting facts for this site: static/SSR served via Netlify Edge. -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>WFF — Wilayah Family Fest</title>
+<meta name="description" content="Platform pendaftaran, aktivitas, galeri, dan donasi untuk festival kebersamaan keluarga paroki." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=20260928" />
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="wrap">
+    <a href="#top" class="brand">
+      <svg class="mark" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="15" stroke="#3730A3" stroke-width="2"/>
+        <path d="M8 20 L13 12 L17 17 L21 9 L25 15" stroke="#FF5A36" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      WFF
+    </a>
+    <ul class="nav-links">
+      <li><a href="#program">Program</a></li>
+      <li><a href="#perjalanan">Cara Kerja</a></li>
+      <li><a href="#komunitas">Komunitas</a></li>
+      <li><a href="#donasi">Donasi &amp; Sponsor</a></li>
+      <li><a href="#galeri">Galeri</a></li>
+      <li><a href="#berita">Berita</a></li>
+    </ul>
+    <a href="#daftar" class="nav-cta">Daftar Event</a>
+    <button class="nav-toggle" aria-label="Buka menu">
+      <svg width="18" height="14" viewBox="0 0 18 14" fill="none"><path d="M0 1H18M0 7H18M0 13H18" stroke="#14151E" stroke-width="1.6"/></svg>
+    </button>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow-badge">Festival Kebersamaan Wilayah</span>
+      <h1>Satu paroki, satu langkah, satu kebersamaan.</h1>
+      <p class="lede">WFF menghubungkan keuskupan, paroki, dan lingkungan lewat aktivitas lari &amp; jalan sehat, galeri kenangan, serta donasi untuk sesama — semua dalam satu platform.</p>
+      <div class="hero-actions">
+        <a href="#daftar" class="btn btn-primary">Daftar sebagai peserta</a>
+        <a href="#perjalanan" class="btn btn-ghost">Lihat cara kerja</a>
+      </div>
+    </div>
+    <div class="hero-figure">
+      <svg viewBox="0 0 480 420" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- route: lingkungan -> paroki -> keuskupan -> finish -->
+        <path d="M40 330 C 90 300, 120 270, 170 250 C 220 230, 250 190, 300 160 C 350 130, 380 100, 430 70"
+              stroke="#FF5A36" stroke-width="3" stroke-dasharray="1 14" stroke-linecap="round" fill="none"/>
+        <circle cx="40" cy="330" r="9" fill="#3730A3"/>
+        <circle cx="170" cy="250" r="7" fill="#fff" stroke="#3730A3" stroke-width="2.5"/>
+        <circle cx="300" cy="160" r="7" fill="#fff" stroke="#3730A3" stroke-width="2.5"/>
+        <circle cx="430" cy="70" r="9" fill="#FF5A36"/>
+
+        <text x="40" y="355" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#52566B">Lingkungan</text>
+        <text x="170" y="277" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#52566B">Paroki</text>
+        <text x="300" y="187" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#52566B">Keuskupan</text>
+        <text x="430" y="97" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#14152B">Finish</text>
+
+        <rect x="24" y="24" width="152" height="98" rx="10" fill="#fff" stroke="#E1DED4"/>
+        <text x="40" y="55" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="20" fill="#14152B">4</text>
+        <text x="62" y="55" font-family="Inter, sans-serif" font-size="12" fill="#52566B">kategori event</text>
+        <text x="40" y="80" font-family="Inter, sans-serif" font-size="10.5" fill="#9195A6">5K · 10K · Jalan Sehat</text>
+        <text x="40" y="95" font-family="Inter, sans-serif" font-size="10.5" fill="#9195A6">· Anak</text>
+
+        <rect x="268" y="272" width="188" height="86" rx="10" fill="#fff" stroke="#E1DED4"/>
+        <text x="284" y="300" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="19" fill="#14152B">Galeri</text>
+        <text x="284" y="320" font-family="Inter, sans-serif" font-size="11" fill="#52566B">Foto &amp; cerita tiap</text>
+        <text x="284" y="335" font-family="Inter, sans-serif" font-size="11" fill="#52566B">aktivitas peserta</text>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<section class="journey" id="perjalanan">
+  <div class="wrap">
+    <div class="journey-head">
+      <h2>Perjalanan peserta, dari daftar sampai berbagi</h2>
+      <p>Empat langkah sederhana yang dirancang supaya panitia lingkungan dan paroki tidak perlu rekap manual lagi.</p>
+    </div>
+    <div class="journey-steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Daftar &amp; pilih paket</h3>
+        <p>Peserta memilih kategori event, paket individu atau kelompok, lalu unggah bukti transfer.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Catat aktivitas</h3>
+        <p>Jarak tempuh dan jenis aktivitas tercatat otomatis, terhubung dengan akun Strava peserta.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Unggah galeri</h3>
+        <p>Foto dan cerita dari lapangan tersimpan per aktivitas dan bisa dikomentari sesama peserta.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <h3>Beri dukungan</h3>
+        <p>Donasi dan sponsorship tercatat rapi, lengkap dengan status verifikasi pembayaran.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="program">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Kategori event tahun ini</h2>
+      <p>Setiap kategori punya paket pendaftaran dan target peserta yang berbeda.</p>
+    </div>
+    <div class="cat-grid">
+      <div class="cat-card">
+        <span class="tag">Lari</span>
+        <h3>Fun Run 5K</h3>
+        <p>Rute ramah pemula mengelilingi kompleks paroki, cocok untuk peserta individu maupun keluarga.</p>
+        <div class="price">Rp 150.000</div>
+      </div>
+      <div class="cat-card">
+        <span class="tag">Lari</span>
+        <h3>Community Run 10K</h3>
+        <p>Untuk peserta yang ingin tantangan lebih jauh, dengan pencatatan waktu dan jarak per lingkungan.</p>
+        <div class="price">Rp 200.000</div>
+      </div>
+      <div class="cat-card">
+        <span class="tag">Keluarga</span>
+        <h3>Jalan Sehat Keluarga</h3>
+        <p>Rute pendek 2K, terbuka untuk semua usia, ditutup dengan doa bersama dan pembagian sembako.</p>
+        <div class="price">Rp 75.000</div>
+      </div>
+      <div class="cat-card">
+        <span class="tag">Anak</span>
+        <h3>Kids Fun Walk</h3>
+        <p>Aktivitas ringan untuk anak sekolah minggu, didampingi orang tua atau pendamping lingkungan.</p>
+        <div class="price">Rp 50.000</div>
+      </div>
+      <div class="cat-card">
+        <span class="tag">Kelompok</span>
+        <h3>Paket Lingkungan</h3>
+        <p>Pendaftaran kolektif per lingkungan, minimal 10 peserta, dengan nomor dada bertema lingkungan.</p>
+        <div class="price">Rp 130.000 /orang</div>
+      </div>
+      <div class="cat-card">
+        <span class="tag">Virtual</span>
+        <h3>Virtual Challenge</h3>
+        <p>Bagi umat di luar kota, jarak tempuh dicatat lewat Strava dan tetap dapat medali finisher.</p>
+        <div class="price">Rp 120.000</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="komunitas">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Terstruktur sesuai komunitas gereja</h2>
+      <p>Data peserta mengikuti hierarki keuskupan, paroki, dan lingkungan yang sudah dikenal umat.</p>
+    </div>
+    <div class="org-row">
+      <div class="org-col">
+        <div class="level">Tingkat 1</div>
+        <h3>Keuskupan</h3>
+        <p>Menaungi beberapa paroki, jadi acuan rekap peserta lintas wilayah untuk keuskupan.</p>
+      </div>
+      <div class="org-col">
+        <div class="level">Tingkat 2</div>
+        <h3>Paroki</h3>
+        <p>Tempat umat terdaftar, sekaligus lokasi utama penyelenggaraan event dan pengambilan racepack.</p>
+      </div>
+      <div class="org-col">
+        <div class="level">Tingkat 3</div>
+        <h3>Lingkungan</h3>
+        <p>Unit terkecil komunitas — jadi dasar pendaftaran kelompok dan papan peringkat antar lingkungan.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="donasi">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow-badge">Donasi</span>
+      <h2>Dukung langkah baik bersama.</h2>
+      <p>Donasi pribadi untuk event pilihanmu, serta paket eksposur untuk mitra yang ingin ikut berbagi.</p>
+    </div>
+    <div class="donation-layout">
+      <form class="donation-form" id="donationForm" enctype="multipart/form-data">
+        <div class="form-card-header">
+          <span class="form-step">♥</span>
+          <div><strong>Donasi pribadi</strong><small>Kontribusi untuk kegiatan dan sesama</small></div>
+        </div>
+        <div class="form-grid">
+          <label class="full-width">Event <span>*</span>
+            <select name="event_id" id="donationEvent" required><option value="">Pilih event</option></select>
+          </label>
+          <label class="full-width">Nama peserta <span class="optional">(opsional)</span>
+            <input name="nama_peserta" type="text" maxlength="150" placeholder="Tulis nama peserta secara manual" />
+          </label>
+          <label>Aktivitas <span>*</span>
+            <select name="aktivitas" required><option value="">Pilih aktivitas</option><option value="LARI">Lari</option><option value="JALAN">Jalan</option><option value="SEPEDA">Sepeda</option></select>
+          </label>
+          <label>Jarak <span>*</span>
+            <select name="jarak" required><option value="">Pilih jarak</option><option>3 KM</option><option>5 KM</option><option>10 KM</option><option>16 KM</option><option>21 KM</option><option>&gt; 21 KM</option></select>
+          </label>
+          <label class="full-width">Nominal donasi <span>*</span>
+            <input name="nominal" type="number" min="1000" step="1000" inputmode="numeric" required placeholder="Contoh: 50000" />
+          </label>
+        </div>
+        <fieldset>
+          <legend>Pembayaran donasi</legend>
+          <div class="payment-info" id="paymentInfo">Memuat informasi pembayaran…</div>
+          <label>Bukti transfer <span>*</span>
+            <input name="bukti_transfer" type="file" accept="image/jpeg,image/png,application/pdf" required />
+            <small>JPG, PNG, atau PDF, maksimal 5 MB.</small>
+          </label>
+          <label>Komentar / deskripsi
+            <textarea name="deskripsi" rows="3" maxlength="1000" placeholder="Tulis pesan atau keterangan donasi."></textarea>
+          </label>
+        </fieldset>
+        <button class="btn btn-primary" type="submit">Kirim donasi</button>
+        <p class="form-status" id="donationStatus" role="status" aria-live="polite"></p>
+      </form>
+
+      <div class="sponsor-area">
+        <form class="company-form" id="companyDonationForm" enctype="multipart/form-data">
+          <div class="form-card-header"><span class="form-step">+</span><div><strong>Donasi perusahaan</strong><small>Jadilah mitra resmi event</small></div></div>
+          <div class="form-grid">
+            <label>Event <span>*</span><select name="event_id" id="companyEvent" required><option value="">Pilih event</option></select></label>
+            <label>Paket sponsor <span>*</span><select name="paket" required><option value="">Pilih paket</option><option value="BRONZE">Bronze — Rp 5.000.000</option><option value="SILVER">Silver — Rp 15.000.000</option><option value="GOLD">Gold — Rp 30.000.000</option></select></label>
+            <label>Nama perusahaan <span>*</span><input name="nama_perusahaan" required maxlength="150" /></label>
+            <label>Nama produk/jasa <span>*</span><input name="nama_produk" required maxlength="150" /></label>
+            <label class="full-width">Alamat perusahaan <span>*</span><textarea name="alamat_perusahaan" rows="2" required maxlength="500"></textarea></label>
+            <label>Nama PIC <span>*</span><input name="nama_pic" required maxlength="150" /></label>
+            <label>No. HP / WhatsApp <span>*</span><input name="no_hp_wa" type="text" inputmode="numeric" pattern="[0-9]{8,15}" required maxlength="15" placeholder="08xxxxxxxxxx" title="Gunakan angka saja, 8–15 digit." /></label>
+            <label>Nama rekening pengirim <span>*</span><input name="nama_rekening_pengirim" required maxlength="150" /></label>
+            <label>Nominal donasi <span>*</span><input name="nominal" type="number" min="1000" step="1000" required /></label>
+            <label>Logo perusahaan <span>*</span><input name="logo_perusahaan" type="file" accept="image/jpeg,image/png" required /><small>JPG atau PNG, maksimal 5 MB.</small></label>
+            <label>Foto produk <span>*</span><input name="foto_produk" type="file" accept="image/jpeg,image/png" required /><small>JPG atau PNG, maksimal 5 MB.</small></label>
+          </div>
+          <fieldset><legend>Pembayaran donasi</legend><div class="payment-info company-payment-info">Memuat informasi pembayaran…</div>
+            <label>Bukti transfer <span>*</span><input name="bukti_transfer" type="file" accept="image/jpeg,image/png,application/pdf" required /><small>JPG, PNG, atau PDF, maksimal 5 MB.</small></label>
+            <label>Komentar / deskripsi<textarea name="deskripsi" rows="3" maxlength="1000" placeholder="Tambahkan keterangan sponsorship."></textarea></label>
+          </fieldset>
+          <button class="btn btn-primary" type="submit">Kirim pengajuan sponsor</button><p class="form-status" id="companyDonationStatus" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+    <p class="product-note">Setelah pembayaran diverifikasi, panitia dapat menerbitkan logo, foto produk, dan deskripsi pada bagian <strong>Product Knowledge</strong>.</p>
+    <section class="product-knowledge" aria-labelledby="productKnowledgeTitle"><h3 id="productKnowledgeTitle">Product Knowledge</h3><p>Produk dan jasa dari mitra sponsor yang telah terverifikasi.</p><div class="product-knowledge-grid" id="productKnowledgeList"></div></section>
+  </div>
+</section>
+
+<section class="section" id="galeri">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Galeri dari lapangan</h2>
+      <p>Cuplikan momen yang diunggah peserta di setiap aktivitas.</p>
+    </div>
+    <div class="gal-grid">
+      <div class="gal-item"><span>Fun Run 5K</span></div>
+      <div class="gal-item"><span>Jalan Sehat</span></div>
+      <div class="gal-item"><span>Kids Fun Walk</span></div>
+      <div class="gal-item"><span>Community Run</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="berita">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Berita &amp; pengumuman</h2>
+      <p>Kabar terbaru seputar persiapan dan hasil event.</p>
+    </div>
+    <div class="news-grid">
+      <article class="news-card">
+        <div class="date">12 Agustus 2026</div>
+        <h3>Pendaftaran Fun Run 5K resmi dibuka</h3>
+        <p>Kuota tahap awal dibuka untuk seluruh lingkungan, pendaftaran ditutup H-7 sebelum hari acara.</p>
+      </article>
+      <article class="news-card">
+        <div class="date">20 Agustus 2026</div>
+        <h3>Panduan pengambilan racepack</h3>
+        <p>Racepack dapat diambil di sekretariat paroki masing-masing sesuai jadwal per lingkungan.</p>
+      </article>
+      <article class="news-card">
+        <div class="date">28 Agustus 2026</div>
+        <h3>Daftar sponsor yang sudah bergabung</h3>
+        <p>Terima kasih kepada mitra usaha yang telah mendukung penyelenggaraan tahun ini.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="registration-section" id="daftar">
+  <div class="wrap registration-grid">
+    <div class="registration-copy">
+      <span class="eyebrow-badge" id="eventBadge">Pilih event</span>
+      <h2 id="eventTitle">Daftarkan langkahmu.</h2>
+      <p id="eventDescription">Pilih event yang ingin diikuti, lalu lengkapi data pendaftaranmu secara individu maupun kelompok.</p>
+      <p class="form-note">Kolom bertanda <span aria-hidden="true">*</span> wajib diisi.</p>
+    </div>
+
+    <form class="registration-form" id="registrationForm">
+      <div class="form-card-header">
+        <span class="form-step">01</span>
+        <div>
+          <strong>Data pendaftaran</strong>
+          <small>Wilayah Family Fest 2026</small>
+        </div>
+        <span class="form-badge">Terbuka</span>
+      </div>
+      <div class="form-grid">
+        <label class="full-width">
+          Event <span>*</span>
+          <select name="event_id" id="eventSelect" required>
+            <option value="">Pilih event</option>
+          </select>
+        </label>
+        <label>
+          Nama Strava <span>*</span>
+          <input name="nama_strava" type="text" required maxlength="150" placeholder="contoh: wff_runner" />
+        </label>
+        <label>
+          Umur <span>*</span>
+          <input name="umur" type="number" required min="1" max="120" placeholder="contoh: 28" />
+        </label>
+        <label>
+          Periode <span>*</span>
+          <select name="periode" required>
+            <option value="" selected disabled>Pilih periode</option>
+            <option value="PERIODE_1">Periode 1</option>
+            <option value="PERIODE_2">Periode 2</option>
+          </select>
+        </label>
+        <label>
+          Pendaftaran <span>*</span>
+          <select name="jenis_pendaftaran" id="registrationType" required>
+            <option value="INDIVIDU">Individu</option>
+            <option value="KELOMPOK">Kelompok</option>
+          </select>
+        </label>
+        <label class="full-width" id="groupNameField" hidden>
+          Nama kelompok <span>*</span>
+          <input name="nama_kelompok" type="text" maxlength="150" placeholder="Nama kelompok atau lingkungan" />
+        </label>
+      </div>
+
+      <fieldset>
+        <legend>Asal komunitas</legend>
+        <div class="form-grid">
+          <label>
+            Keuskupan <span>*</span>
+            <select name="keuskupan_id" id="dioceseSelect" required>
+              <option value="">Pilih keuskupan</option>
+            </select>
+          </label>
+          <label>
+            Paroki/Stasi <span>*</span>
+            <select name="paroki_stasi_id" id="parishSelect" required>
+              <option value="">Pilih paroki atau stasi</option>
+            </select>
+          </label>
+          <label class="full-width">
+            <input class="checkbox" name="is_church_account" id="churchAccount" type="checkbox" />
+            Saya mendaftar melalui akun gereja
+          </label>
+          <label class="full-width" id="regionField" hidden>
+            Nama wilayah <span>*</span>
+            <input name="nama_wilayah" type="text" maxlength="150" placeholder="Contoh: Wilayah Santo Yosef" />
+          </label>
+          <label class="full-width">
+            Lingkungan
+            <input name="lingkungan" type="text" maxlength="150" placeholder="Contoh: Lingkungan Santo Andreas" />
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Alamat</legend>
+        <div class="form-grid">
+          <label>
+            Perumahan
+            <input name="perumahan" type="text" maxlength="150" />
+          </label>
+          <label>
+            RT
+            <input name="rt" type="text" maxlength="10" placeholder="001" inputmode="numeric" pattern="[0-9]{1,10}" title="Gunakan angka saja." />
+          </label>
+          <label>
+            RW
+            <input name="rw" type="text" maxlength="10" placeholder="005" inputmode="numeric" pattern="[0-9]{1,10}" title="Gunakan angka saja." />
+          </label>
+          <label>
+            Nama jalan
+            <input name="nama_jalan" type="text" maxlength="255" />
+          </label>
+          <label>
+            Desa/Kelurahan
+            <input name="desa_kelurahan" type="text" maxlength="150" />
+          </label>
+        </div>
+      </fieldset>
+
+      <button class="btn btn-primary" type="submit">Kirim pendaftaran</button>
+      <p class="form-status" id="registrationStatus" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="wrap">
+    <h2>Siap ikut melangkah bersama paroki?</h2>
+    <p>Pendaftaran terbuka untuk seluruh umat, individu maupun kelompok lingkungan.</p>
+    <div class="hero-actions" style="justify-content:center">
+      <a href="#daftar" class="btn btn-primary">Daftar sekarang</a>
+      <a href="#program" class="btn btn-ghost">Lihat semua kategori</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <h4 style="color:#F0EFFA; font-family:Space Grotesk, sans-serif; font-size:1.1rem;">WFF</h4>
+        <p style="color:#8285A0; max-width:32ch;">Wilayah Family Fest — festival kebersamaan keluarga paroki, dari aktivitas sehat sampai berbagi dengan sesama.</p>
+      </div>
+      <div>
+        <h4>Jelajah</h4>
+        <a href="#program">Program</a>
+        <a href="#perjalanan">Cara Kerja</a>
+        <a href="#komunitas">Komunitas</a>
+      </div>
+      <div>
+        <h4>Dukungan</h4>
+        <a href="#donasi">Donasi</a>
+        <a href="#donasi">Sponsorship</a>
+        <a href="#galeri">Galeri</a>
+      </div>
+      <div>
+        <h4>Tools</h4>
+        <a href='/classifier'>Cek ON-US / OFF-US</a>
+        <a href="#berita">Berita</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 WFF. Dibuat untuk komunitas paroki.</span>
+      <span>Dibangun cepat &amp; ramah mobile.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="nav.js"></script>
+<script src="registration.js"></script>
+<script src="donation.js"></script>
+<script src="company-donation.js"></script>
+</body>
+</html>
+<script async src="/.netlify/scripts/hud?variant=public" data-nf-variant="public" data-netlify-site-id="42f6af8c-70a3-493f-b2f6-c647a0901ced" data-app-host="app.netlify.com"></script>

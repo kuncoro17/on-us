@@ -1,0 +1,143 @@
+{"kind":"deck","id":"pr/jqbzz0","name":"Deck"}
+{"kind":"layout","layoutId":"6b20c727-d4e7-42b9-bb14-0a723a9d2878","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"f8264457-6b23-4c87-856e-cf6a03a9fe49","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/u7djjt","slide":1,"title":"WFF PRODUCT UPDATE","textShapes":6}
+{"kind":"shape","id":"sh/yxobm58z","slide":1,"bbox":[72,68,190,30]}
+{"kind":"textbox","id":"sh/5o7qpg3e","slide":1,"text":"WFF PRODUCT UPDATE","textPreview":"WFF PRODUCT UPDATE","textChars":18,"textLines":1,"bbox":[84,75,166,16]}
+{"kind":"textbox","id":"sh/g3ex0nux","slide":1,"text":"Satu platform untuk\nlangkah, donasi, dan dampak.","textPreview":"Satu platform untuk | langkah, donasi, dan dampak.","textChars":48,"textLines":2,"bbox":[72,146,730,150]}
+{"kind":"textbox","id":"sh/r65wjudg","slide":1,"text":"Ringkasan pengembangan pendaftaran multi-event\ndan donasi pribadi/perusahaan.","textPreview":"Ringkasan pengembangan pendaftaran multi-event | dan donasi pribadi/perusahaan.","textChars":77,"textLines":2,"bbox":[76,330,570,65]}
+{"kind":"shape","id":"sh/ylc7u54z","slide":1,"bbox":[840,120,300,360]}
+{"kind":"textbox","id":"sh/9cvixcze","slide":1,"text":"2026","textPreview":"2026","textChars":4,"textLines":1,"bbox":[876,168,210,60]}
+{"kind":"textbox","id":"sh/gr2p8nqx","slide":1,"text":"Walking Fun\nRun Fun\nDonasi","textPreview":"Walking Fun | Run Fun | Donasi","textChars":26,"textLines":3,"bbox":[876,256,190,130]}
+{"kind":"textbox","id":"sh/rytsvu9k","slide":1,"text":"WFF • Wilayah Family Fest","textPreview":"WFF • Wilayah Family Fest","textChars":25,"textLines":1,"bbox":[72,650,330,18]}
+{"kind":"notes","id":"nt/u7djjt","slide":1,"text":""}
+{"kind":"slide","id":"sl/xozk0m","slide":2,"title":"WFF  /  UPDATE 02","textShapes":17}
+{"kind":"textbox","id":"sh/t83itgfm","slide":2,"text":"WFF  /  UPDATE 02","textPreview":"WFF  /  UPDATE 02","textChars":17,"textLines":1,"bbox":[64,42,260,20]}
+{"kind":"textbox","id":"sh/mhk3q5o7","slide":2,"text":"Pendaftaran kini berbasis event.","textPreview":"Pendaftaran kini berbasis event.","textChars":32,"textLines":1,"bbox":[64,78,1050,76]}
+{"kind":"textbox","id":"sh/b2hwfyxo","slide":2,"text":"Walking Fun dan Run Fun dipilih dari satu dropdown event yang sama.","textPreview":"Walking Fun dan Run Fun dipilih dari satu dropdown event yang sama.","textChars":67,"textLines":1,"bbox":[64,164,1040,28]}
+{"kind":"textbox","id":"sh/4byhgn29","slide":2,"text":"2 / 6","textPreview":"2 / 6","textChars":5,"textLines":1,"bbox":[1138,660,78,18]}
+{"kind":"shape","id":"sh/twra5gbq","slide":2,"bbox":[64,244,228,238]}
+{"kind":"shape","id":"sh/m58z25kb","slide":2,"bbox":[84,266,42,30]}
+{"kind":"textbox","id":"sh/bq1oryts","slide":2,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[96,273,18,16]}
+{"kind":"textbox","id":"sh/47y1kre1","slide":2,"text":"Pilih event","textPreview":"Pilih event","textChars":11,"textLines":1,"bbox":[84,320,185,45]}
+{"kind":"textbox","id":"sh/tsvu9kni","slide":2,"text":"Walking Fun atau Run Fun","textPreview":"Walking Fun atau Run Fun","textChars":24,"textLines":1,"bbox":[84,374,185,60]}
+{"kind":"shape","id":"sh/90je9cvi","slide":2,"bbox":[372,244,228,238]}
+{"kind":"shape","id":"sh/gfmlkjm1","slide":2,"bbox":[392,266,42,30]}
+{"kind":"textbox","id":"sh/rytsvu9k","slide":2,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[404,273,18,16]}
+{"kind":"textbox","id":"sh/yd0z6103","slide":2,"text":"Isi data","textPreview":"Isi data","textChars":8,"textLines":1,"bbox":[392,320,185,45]}
+{"kind":"textbox","id":"sh/9s36hcrm","slide":2,"text":"Strava, umur, komunitas, alamat","textPreview":"Strava, umur, komunitas, alamat","textChars":31,"textLines":1,"bbox":[392,374,185,60]}
+{"kind":"shape","id":"sh/g7adsji5","slide":2,"bbox":[680,244,228,238]}
+{"kind":"shape","id":"sh/rmhk3q5o","slide":2,"bbox":[700,266,42,30]}
+{"kind":"textbox","id":"sh/y1kre1w7","slide":2,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[712,273,18,16]}
+{"kind":"textbox","id":"sh/5o7qpg3e","slide":2,"text":"Pilih komunitas","textPreview":"Pilih komunitas","textChars":15,"textLines":1,"bbox":[700,320,185,45]}
+{"kind":"textbox","id":"sh/g3ex0nux","slide":2,"text":"Keuskupan lalu Paroki/Stasi","textPreview":"Keuskupan lalu Paroki/Stasi","textChars":27,"textLines":1,"bbox":[700,374,185,60]}
+{"kind":"shape","id":"sh/cfa9w3m9","slide":2,"bbox":[988,244,228,238]}
+{"kind":"shape","id":"sh/1032lszq","slide":2,"bbox":[1008,266,42,30]}
+{"kind":"textbox","id":"sh/u9knih4b","slide":2,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[1020,273,18,16]}
+{"kind":"textbox","id":"sh/judg7ads","slide":2,"text":"Kirim","textPreview":"Kirim","textChars":5,"textLines":1,"bbox":[1008,320,185,45]}
+{"kind":"textbox","id":"sh/c7u54zid","slide":2,"text":"Data masuk ke event registration","textPreview":"Data masuk ke event registration","textChars":32,"textLines":1,"bbox":[1008,374,185,60]}
+{"kind":"textbox","id":"sh/1orytsvu","slide":2,"text":"Validasi form: field wajib, input angka untuk umur/RT/RW, dan pendaftaran individu atau kelompok.","textPreview":"Validasi form: field wajib, input angka untuk umur/RT/RW, dan pendaftaran individu atau kelompok.","textChars":97,"textLines":1,"bbox":[64,550,980,30]}
+{"kind":"notes","id":"nt/xozk0m","slide":2,"text":""}
+{"kind":"slide","id":"sl/p1gh5m","slide":3,"title":"WFF  /  UPDATE 03","textShapes":21}
+{"kind":"textbox","id":"sh/w7mp0bi9","slide":3,"text":"WFF  /  UPDATE 03","textPreview":"WFF  /  UPDATE 03","textChars":17,"textLines":1,"bbox":[64,42,260,20]}
+{"kind":"textbox","id":"sh/7mp0bi9s","slide":3,"text":"Donasi pribadi dibuat cepat dan terarah.","textPreview":"Donasi pribadi dibuat cepat dan terarah.","textChars":40,"textLines":1,"bbox":[64,78,1050,76]}
+{"kind":"textbox","id":"sh/e1w7mp0b","slide":3,"text":"Peserta dapat mengisi nama manual; pencarian akun tidak lagi wajib.","textPreview":"Peserta dapat mengisi nama manual; pencarian akun tidak lagi wajib.","textChars":67,"textLines":1,"bbox":[64,164,1040,28]}
+{"kind":"textbox","id":"sh/pg3ex0nu","slide":3,"text":"3 / 6","textPreview":"3 / 6","textChars":5,"textLines":1,"bbox":[1138,660,78,18]}
+{"kind":"shape","id":"sh/wval87ed","slide":3,"bbox":[64,210,520,390]}
+{"kind":"textbox","id":"sh/7adsji5s","slide":3,"text":"Alur donasi","textPreview":"Alur donasi","textChars":11,"textLines":1,"bbox":[94,244,340,28]}
+{"kind":"textbox","id":"sh/epkzupwb","slide":3,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[94,294,22,20]}
+{"kind":"textbox","id":"sh/lc7u54zi","slide":3,"text":"Pilih event, aktivitas, dan jarak","textPreview":"Pilih event, aktivitas, dan jarak","textChars":33,"textLines":1,"bbox":[124,294,390,34]}
+{"kind":"textbox","id":"sh/wra5gbq1","slide":3,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[94,342,22,20]}
+{"kind":"textbox","id":"sh/upwb2hwf","slide":3,"text":"Masukkan nominal donasi","textPreview":"Masukkan nominal donasi","textChars":23,"textLines":1,"bbox":[124,342,390,34]}
+{"kind":"textbox","id":"sh/nap4r65w","slide":3,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[94,390,22,20]}
+{"kind":"textbox","id":"sh/cvixczed","slide":3,"text":"Pilih QRIS atau rekening gereja","textPreview":"Pilih QRIS atau rekening gereja","textChars":31,"textLines":1,"bbox":[124,390,390,34]}
+{"kind":"textbox","id":"sh/5gbq1ory","slide":3,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[94,438,22,20]}
+{"kind":"textbox","id":"sh/udg7adsj","slide":3,"text":"Unggah bukti transfer + komentar","textPreview":"Unggah bukti transfer + komentar","textChars":32,"textLines":1,"bbox":[124,438,390,34]}
+{"kind":"shape","id":"sh/nyd0z610","slide":3,"bbox":[630,210,586,390]}
+{"kind":"textbox","id":"sh/cj6tovah","slide":3,"text":"Kategori aktivitas & jarak","textPreview":"Kategori aktivitas & jarak","textChars":26,"textLines":1,"bbox":[666,246,420,30]}
+{"kind":"shape","id":"sh/54zidony","slide":3,"bbox":[666,302,500,58]}
+{"kind":"textbox","id":"sh/u9knih4b","slide":3,"text":"Lari","textPreview":"Lari","textChars":4,"textLines":1,"bbox":[686,320,130,20]}
+{"kind":"textbox","id":"sh/judg7ads","slide":3,"text":"3 / 5 / 10 KM","textPreview":"3 / 5 / 10 KM","textChars":13,"textLines":1,"bbox":[860,320,250,20]}
+{"kind":"shape","id":"sh/fil0rqd4","slide":3,"bbox":[666,380,500,58]}
+{"kind":"textbox","id":"sh/qxs72x4n","slide":3,"text":"Jalan","textPreview":"Jalan","textChars":5,"textLines":1,"bbox":[686,398,130,20]}
+{"kind":"textbox","id":"sh/xobm58z2","slide":3,"text":"16 / 21 KM","textPreview":"16 / 21 KM","textChars":10,"textLines":1,"bbox":[860,398,250,20]}
+{"kind":"shape","id":"sh/83itgfml","slide":3,"bbox":[666,458,500,58]}
+{"kind":"textbox","id":"sh/fu18jqh0","slide":3,"text":"Sepeda","textPreview":"Sepeda","textChars":6,"textLines":1,"bbox":[686,476,130,20]}
+{"kind":"textbox","id":"sh/m94fu18j","slide":3,"text":"> 21 KM","textPreview":"> 21 KM","textChars":7,"textLines":1,"bbox":[860,476,250,20]}
+{"kind":"textbox","id":"sh/x0nuxc3y","slide":3,"text":"Status awal: menunggu verifikasi panitia","textPreview":"Status awal: menunggu verifikasi panitia","textChars":40,"textLines":1,"bbox":[666,548,390,20]}
+{"kind":"notes","id":"nt/p1gh5m","slide":3,"text":""}
+{"kind":"slide","id":"sl/csubug","slide":4,"title":"WFF  /  UPDATE 04","textShapes":20}
+{"kind":"textbox","id":"sh/1kre1w7m","slide":4,"text":"WFF  /  UPDATE 04","textPreview":"WFF  /  UPDATE 04","textChars":17,"textLines":1,"bbox":[64,42,260,20]}
+{"kind":"textbox","id":"sh/uxc3ylc7","slide":4,"text":"Donasi perusahaan menggantikan kartu paket lama.","textPreview":"Donasi perusahaan menggantikan kartu paket lama.","textChars":48,"textLines":1,"bbox":[64,78,1050,76]}
+{"kind":"textbox","id":"sh/ji5snelo","slide":4,"text":"Form perusahaan kini berada berdampingan dengan Donasi Pribadi agar alurnya lebih ringkas.","textPreview":"Form perusahaan kini berada berdampingan dengan Donasi Pribadi agar alurnya lebih ringkas.","textChars":90,"textLines":1,"bbox":[64,164,1040,28]}
+{"kind":"textbox","id":"sh/crmhk3q5","slide":4,"text":"4 / 6","textPreview":"4 / 6","textChars":5,"textLines":1,"bbox":[1138,660,78,18]}
+{"kind":"shape","id":"sh/1cfa9w3m","slide":4,"bbox":[64,215,515,360]}
+{"kind":"textbox","id":"sh/ulwval87","slide":4,"text":"Data yang dikumpulkan","textPreview":"Data yang dikumpulkan","textChars":21,"textLines":1,"bbox":[94,248,320,28]}
+{"kind":"textbox","id":"sh/j6tovaho","slide":4,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[94,300,22,20]}
+{"kind":"textbox","id":"sh/8nqxs72x","slide":4,"text":"Event dan paket sponsor","textPreview":"Event dan paket sponsor","textChars":23,"textLines":1,"bbox":[124,300,390,34]}
+{"kind":"textbox","id":"sh/18jqh0fe","slide":4,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[94,348,22,20]}
+{"kind":"textbox","id":"sh/psfil0rq","slide":4,"text":"Perusahaan, produk/jasa, PIC & WhatsApp","textPreview":"Perusahaan, produk/jasa, PIC & WhatsApp","textChars":39,"textLines":1,"bbox":[124,348,390,34]}
+{"kind":"textbox","id":"sh/w7mp0bi9","slide":4,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[94,396,22,20]}
+{"kind":"textbox","id":"sh/7mp0bi9s","slide":4,"text":"Logo, foto produk, rekening pengirim","textPreview":"Logo, foto produk, rekening pengirim","textChars":36,"textLines":1,"bbox":[124,396,390,34]}
+{"kind":"textbox","id":"sh/e1w7mp0b","slide":4,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[94,444,22,20]}
+{"kind":"textbox","id":"sh/pg3ex0nu","slide":4,"text":"Bukti transfer dan deskripsi","textPreview":"Bukti transfer dan deskripsi","textChars":28,"textLines":1,"bbox":[124,444,390,34]}
+{"kind":"shape","id":"sh/wval87ed","slide":4,"bbox":[624,215,592,360]}
+{"kind":"textbox","id":"sh/7adsji5s","slide":4,"text":"Paket sponsor","textPreview":"Paket sponsor","textChars":13,"textLines":1,"bbox":[658,248,260,28]}
+{"kind":"shape","id":"sh/epkzupwb","slide":4,"bbox":[658,300,520,54]}
+{"kind":"textbox","id":"sh/lc7u54zi","slide":4,"text":"Bronze","textPreview":"Bronze","textChars":6,"textLines":1,"bbox":[678,317,150,20]}
+{"kind":"textbox","id":"sh/wra5gbq1","slide":4,"text":"Rp5.000.000","textPreview":"Rp5.000.000","textChars":11,"textLines":1,"bbox":[940,317,200,20]}
+{"kind":"shape","id":"sh/s36hcrmh","slide":4,"bbox":[658,376,520,54]}
+{"kind":"textbox","id":"sh/hoza1gvy","slide":4,"text":"Silver","textPreview":"Silver","textChars":6,"textLines":1,"bbox":[678,393,150,20]}
+{"kind":"textbox","id":"sh/a1gvy90j","slide":4,"text":"Rp15.000.000","textPreview":"Rp15.000.000","textChars":12,"textLines":1,"bbox":[940,393,200,20]}
+{"kind":"shape","id":"sh/zidonyd0","slide":4,"bbox":[658,452,520,54]}
+{"kind":"textbox","id":"sh/svu9knih","slide":4,"text":"Gold","textPreview":"Gold","textChars":4,"textLines":1,"bbox":[678,469,150,20]}
+{"kind":"textbox","id":"sh/hgn29gr2","slide":4,"text":"Rp30.000.000","textPreview":"Rp30.000.000","textChars":12,"textLines":1,"bbox":[940,469,200,20]}
+{"kind":"notes","id":"nt/csubug","slide":4,"text":""}
+{"kind":"slide","id":"sl/mndwxz","slide":5,"title":"WFF  /  UPDATE 05","textShapes":16}
+{"kind":"textbox","id":"sh/6hcrmhk3","slide":5,"text":"WFF  /  UPDATE 05","textPreview":"WFF  /  UPDATE 05","textChars":17,"textLines":1,"bbox":[64,42,260,20]}
+{"kind":"textbox","id":"sh/d8v6psfi","slide":5,"text":"Product Knowledge tayang setelah sponsor diterima.","textPreview":"Product Knowledge tayang setelah sponsor diterima.","textChars":50,"textLines":1,"bbox":[64,78,1050,76]}
+{"kind":"textbox","id":"sh/onyd0z61","slide":5,"text":"Konten publik berasal dari data sponsor yang telah diverifikasi, bukan dari unggahan yang belum diperiksa.","textPreview":"Konten publik berasal dari data sponsor yang telah diverifikasi, bukan dari unggahan yang belum diperiksa.","textChars":106,"textLines":1,"bbox":[64,164,1040,28]}
+{"kind":"textbox","id":"sh/vahoza1g","slide":5,"text":"5 / 6","textPreview":"5 / 6","textChars":5,"textLines":1,"bbox":[1138,660,78,18]}
+{"kind":"shape","id":"sh/6tovahoz","slide":5,"bbox":[88,270,310,190]}
+{"kind":"textbox","id":"sh/dg7adsji","slide":5,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[114,294,52,28]}
+{"kind":"textbox","id":"sh/ovahoza1","slide":5,"text":"Pengajuan sponsor","textPreview":"Pengajuan sponsor","textChars":17,"textLines":1,"bbox":[114,338,255,35]}
+{"kind":"textbox","id":"sh/vmtwra5g","slide":5,"text":"Logo, foto produk, deskripsi, bukti transfer","textPreview":"Logo, foto produk, deskripsi, bukti transfer","textChars":44,"textLines":1,"bbox":[114,386,255,48]}
+{"kind":"textbox","id":"sh/61032lsz","slide":5,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[410,342,40,35]}
+{"kind":"shape","id":"sh/wval87ed","slide":5,"bbox":[474,270,310,190]}
+{"kind":"textbox","id":"sh/pg3ex0nu","slide":5,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[500,294,52,28]}
+{"kind":"textbox","id":"sh/epkzupwb","slide":5,"text":"Verifikasi panitia","textPreview":"Verifikasi panitia","textChars":18,"textLines":1,"bbox":[500,338,255,35]}
+{"kind":"textbox","id":"sh/7adsji5s","slide":5,"text":"Status berubah menjadi DITERIMA","textPreview":"Status berubah menjadi DITERIMA","textChars":31,"textLines":1,"bbox":[500,386,255,48]}
+{"kind":"textbox","id":"sh/w7mp0bi9","slide":5,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[796,342,40,35]}
+{"kind":"shape","id":"sh/psfil0rq","slide":5,"bbox":[860,270,310,190]}
+{"kind":"textbox","id":"sh/e1w7mp0b","slide":5,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[886,294,52,28]}
+{"kind":"textbox","id":"sh/7mp0bi9s","slide":5,"text":"Publikasi otomatis","textPreview":"Publikasi otomatis","textChars":18,"textLines":1,"bbox":[886,338,255,35]}
+{"kind":"textbox","id":"sh/wfyxobm5","slide":5,"text":"Product Knowledge menampilkan produk/jasa","textPreview":"Product Knowledge menampilkan produk/jasa","textChars":41,"textLines":1,"bbox":[886,386,255,48]}
+{"kind":"textbox","id":"sh/l0rqd4vm","slide":5,"text":"Keamanan: bukti transfer tidak dapat diakses langsung secara publik.","textPreview":"Keamanan: bukti transfer tidak dapat diakses langsung secara publik.","textChars":68,"textLines":1,"bbox":[172,540,900,28]}
+{"kind":"notes","id":"nt/mndwxz","slide":5,"text":""}
+{"kind":"slide","id":"sl/f1bmrx","slide":6,"title":"WFF  /  UPDATE 06","textShapes":23}
+{"kind":"textbox","id":"sh/g7adsji5","slide":6,"text":"WFF  /  UPDATE 06","textPreview":"WFF  /  UPDATE 06","textChars":17,"textLines":1,"bbox":[64,42,260,20]}
+{"kind":"textbox","id":"sh/rmhk3q5o","slide":6,"text":"Status implementasi & langkah berikutnya.","textPreview":"Status implementasi & langkah berikutnya.","textChars":41,"textLines":1,"bbox":[64,78,1050,76]}
+{"kind":"textbox","id":"sh/y1kre1w7","slide":6,"text":"Fitur inti sudah tersedia; fokus berikutnya adalah operasional dan deployment yang aman.","textPreview":"Fitur inti sudah tersedia; fokus berikutnya adalah operasional dan deployment yang aman.","textChars":88,"textLines":1,"bbox":[64,164,1040,28]}
+{"kind":"textbox","id":"sh/90je9cvi","slide":6,"text":"6 / 6","textPreview":"6 / 6","textChars":5,"textLines":1,"bbox":[1138,660,78,18]}
+{"kind":"shape","id":"sh/gfmlkjm1","slide":6,"bbox":[64,210,540,340]}
+{"kind":"textbox","id":"sh/rytsvu9k","slide":6,"text":"Sudah tersedia","textPreview":"Sudah tersedia","textChars":14,"textLines":1,"bbox":[96,246,300,28]}
+{"kind":"textbox","id":"sh/yd0z6103","slide":6,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[96,296,22,20]}
+{"kind":"textbox","id":"sh/9cvixcze","slide":6,"text":"API Express + PostgreSQL","textPreview":"API Express + PostgreSQL","textChars":24,"textLines":1,"bbox":[126,296,410,34]}
+{"kind":"textbox","id":"sh/gr2p8nqx","slide":6,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[96,344,22,20]}
+{"kind":"textbox","id":"sh/ahoza1gv","slide":6,"text":"Upload bukti transfer & aset sponsor","textPreview":"Upload bukti transfer & aset sponsor","textChars":36,"textLines":1,"bbox":[126,344,410,34]}
+{"kind":"textbox","id":"sh/32lszqtc","slide":6,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[96,392,22,20]}
+{"kind":"textbox","id":"sh/sneloj2t","slide":6,"text":"Event, donasi pribadi, dan perusahaan","textPreview":"Event, donasi pribadi, dan perusahaan","textChars":37,"textLines":1,"bbox":[126,392,410,34]}
+{"kind":"textbox","id":"sh/l87ed8ba","slide":6,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[96,440,22,20]}
+{"kind":"textbox","id":"sh/at47y1kr","slide":6,"text":"Validasi data dan Product Knowledge","textPreview":"Validasi data dan Product Knowledge","textChars":35,"textLines":1,"bbox":[126,440,410,34]}
+{"kind":"shape","id":"sh/3ex0nuxc","slide":6,"bbox":[646,210,570,340]}
+{"kind":"textbox","id":"sh/szqtcj6t","slide":6,"text":"Langkah berikutnya","textPreview":"Langkah berikutnya","textChars":18,"textLines":1,"bbox":[678,246,340,28]}
+{"kind":"textbox","id":"sh/lkjm1cfa","slide":6,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[678,296,22,20]}
+{"kind":"textbox","id":"sh/ex0nuxc3","slide":6,"text":"Isi QRIS dan rekening pada konfigurasi .env","textPreview":"Isi QRIS dan rekening pada konfigurasi .env","textChars":43,"textLines":1,"bbox":[708,296,440,34]}
+{"kind":"textbox","id":"sh/3itgfmlk","slide":6,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[678,344,22,20]}
+{"kind":"textbox","id":"sh/vahoza1g","slide":6,"text":"Jalankan donations.sql pada database yang sama","textPreview":"Jalankan donations.sql pada database yang sama","textChars":46,"textLines":1,"bbox":[708,344,440,34]}
+{"kind":"textbox","id":"sh/6tovahoz","slide":6,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[678,392,22,20]}
+{"kind":"textbox","id":"sh/dg7adsji","slide":6,"text":"Siapkan proses verifikasi panitia","textPreview":"Siapkan proses verifikasi panitia","textChars":33,"textLines":1,"bbox":[708,392,440,34]}
+{"kind":"textbox","id":"sh/ovahoza1","slide":6,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[678,440,22,20]}
+{"kind":"textbox","id":"sh/z25kb6xk","slide":6,"text":"Gunakan object storage untuk deployment produksi","textPreview":"Gunakan object storage untuk deployment produksi","textChars":48,"textLines":1,"bbox":[708,440,440,34]}
+{"kind":"textbox","id":"sh/6hcrmhk3","slide":6,"text":"Tidak ada metrik penggunaan atau nilai transaksi yang disajikan dalam update ini.","textPreview":"Tidak ada metrik penggunaan atau nilai transaksi yang disajikan dalam update ini.","textChars":81,"textLines":1,"bbox":[64,610,890,20]}
+{"kind":"notes","id":"nt/f1bmrx","slide":6,"text":""}
