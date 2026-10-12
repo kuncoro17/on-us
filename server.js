@@ -101,6 +101,44 @@ app.get("/api/admin/masters", async (_request, response, next) => {
   } catch (error) { next(error); }
 });
 
+app.get("/api/admin/dashboard", async (_request, response, next) => {
+  try {
+    const [summary, events, donationSeries] = await Promise.all([
+      pool.query(`SELECT
+        (SELECT COUNT(*) FROM event_registrations)::int AS total_participants,
+        (SELECT COALESCE(SUM(nominal), 0) FROM event_donations)::numeric AS total_donations,
+        (SELECT COALESCE(SUM(nominal), 0) FROM event_donations WHERE status = 'DITERIMA')::numeric AS accepted_donations`),
+      pool.query(`SELECT e.id, e.nama,
+        COALESCE(r.total_participants, 0)::int AS total_participants,
+        COALESCE(d.total_donations, 0)::numeric AS total_donations,
+        COALESCE(d.accepted_donations, 0)::numeric AS accepted_donations
+        FROM events e
+        LEFT JOIN (
+          SELECT event_id, COUNT(*) AS total_participants
+          FROM event_registrations GROUP BY event_id
+        ) r ON r.event_id = e.id
+        LEFT JOIN (
+          SELECT event_id, SUM(nominal) AS total_donations,
+            SUM(nominal) FILTER (WHERE status = 'DITERIMA') AS accepted_donations
+          FROM event_donations GROUP BY event_id
+        ) d ON d.event_id = e.id
+        ORDER BY e.nama ASC`),
+      pool.query(`WITH daily_donations AS (
+          SELECT d.created_at::date AS tanggal, e.id AS event_id, e.nama AS event_nama,
+            COALESCE(SUM(d.nominal), 0)::numeric AS nominal_harian
+          FROM event_donations d
+          JOIN events e ON e.id = d.event_id
+          GROUP BY d.created_at::date, e.id, e.nama
+        )
+        SELECT TO_CHAR(tanggal, 'YYYY-MM-DD') AS tanggal, event_id, event_nama,
+          SUM(nominal_harian) OVER (PARTITION BY event_id ORDER BY tanggal)::numeric AS nominal
+        FROM daily_donations
+        ORDER BY tanggal ASC, event_nama ASC`),
+    ]);
+    response.json({ summary: summary.rows[0], events: events.rows, donation_series: donationSeries.rows });
+  } catch (error) { next(error); }
+});
+
 app.get("/api/admin/events", async (_request, response, next) => {
   try {
     const result = await pool.query("SELECT id, nama FROM events ORDER BY nama ASC");
