@@ -26,6 +26,11 @@ const upload = multer({
 
 app.use(express.json());
 app.use("/uploads", (_request, response) => response.status(403).json({ message: "Berkas tidak dapat diakses langsung." }));
+// Route eksplisit agar dashboard tetap tersedia pada deployment yang tidak
+// melakukan static-file fallback secara otomatis.
+app.get("/", (_request, response) => response.sendFile(path.join(__dirname, "index.html")));
+app.get("/admin", (_request, response) => response.redirect(302, "/admin.html"));
+app.get("/admin.html", (_request, response) => response.sendFile(path.join(__dirname, "admin.html")));
 app.use(express.static(__dirname));
 
 app.get("/api/payment-info", (_request, response) => {
@@ -72,6 +77,210 @@ app.get("/api/paroki-stasi", async (request, response, next) => {
   } catch (error) {
     next(error);
   }
+});
+
+function cleanName(value) {
+  return String(value || "").trim().replace(/\s+/g, " ");
+}
+
+function validUuid(value) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(value));
+}
+
+// Admin lokal sederhana: endpoint dibiarkan terbuka selama pengembangan.
+app.get("/api/admin/masters", async (_request, response, next) => {
+  try {
+    const [events, dioceses, parishes] = await Promise.all([
+      pool.query("SELECT id, nama FROM events ORDER BY nama ASC"),
+      pool.query("SELECT id, nama FROM keuskupan ORDER BY nama ASC"),
+      pool.query(`SELECT ps.id, ps.nama, ps.tipe, ps.keuskupan_id, k.nama AS keuskupan_nama
+        FROM paroki_stasi ps JOIN keuskupan k ON k.id = ps.keuskupan_id
+        ORDER BY k.nama ASC, ps.tipe ASC, ps.nama ASC`),
+    ]);
+    response.json({ events: events.rows, keuskupan: dioceses.rows, paroki_stasi: parishes.rows });
+  } catch (error) { next(error); }
+});
+
+app.get("/api/admin/events", async (_request, response, next) => {
+  try {
+    const result = await pool.query("SELECT id, nama FROM events ORDER BY nama ASC");
+    response.json(result.rows);
+  } catch (error) { next(error); }
+});
+
+app.get("/api/admin/keuskupan", async (_request, response, next) => {
+  try {
+    const result = await pool.query("SELECT id, nama FROM keuskupan ORDER BY nama ASC");
+    response.json(result.rows);
+  } catch (error) { next(error); }
+});
+
+app.get("/api/admin/paroki-stasi", async (_request, response, next) => {
+  try {
+    const result = await pool.query(`SELECT ps.id, ps.nama, ps.tipe, ps.keuskupan_id, k.nama AS keuskupan_nama
+      FROM paroki_stasi ps JOIN keuskupan k ON k.id = ps.keuskupan_id
+      ORDER BY k.nama ASC, ps.tipe ASC, ps.nama ASC`);
+    response.json(result.rows);
+  } catch (error) { next(error); }
+});
+
+// Data operasional untuk dashboard panitia. Endpoint ini sengaja dipisahkan dari
+// endpoint publik agar informasi peserta dan bukti pembayaran tidak terekspos.
+const adminDataQueries = {
+  registrations: `SELECT r.*, e.nama AS event_nama, k.nama AS keuskupan_nama, ps.nama AS paroki_stasi_nama
+    FROM event_registrations r JOIN events e ON e.id=r.event_id JOIN keuskupan k ON k.id=r.keuskupan_id
+    JOIN paroki_stasi ps ON ps.id=r.paroki_stasi_id ORDER BY r.created_at DESC`,
+  donations: `SELECT d.*, e.nama AS event_nama FROM event_donations d JOIN events e ON e.id=d.event_id ORDER BY d.created_at DESC`,
+  sponsors: `SELECT d.*, e.nama AS event_nama FROM company_donations d JOIN events e ON e.id=d.event_id ORDER BY d.created_at DESC`,
+  products: `SELECT pk.*, cd.nama_perusahaan, cd.nama_produk, cd.event_id, e.nama AS event_nama
+    FROM sponsor_product_knowledge pk JOIN company_donations cd ON cd.id=pk.company_donation_id
+    JOIN events e ON e.id=cd.event_id ORDER BY pk.published_at DESC`,
+};
+
+app.get("/api/admin/data/:type", async (request, response, next) => {
+  const query = adminDataQueries[request.params.type];
+  if (!query) return response.status(404).json({ message: "Jenis data admin tidak dikenal." });
+  try { response.json((await pool.query(query)).rows); } catch (error) { next(error); }
+});
+
+function cleanNullable(value, limit = 1000) {
+  const clean = cleanName(value);
+  return clean ? clean.slice(0, limit) : null;
+}
+function validStatus(value) { return ["MENUNGGU_VERIFIKASI", "DITERIMA", "DITOLAK"].includes(value); }
+function validPackage(value) { return ["BRONZE", "SILVER", "GOLD"].includes(value); }
+function validActivity(value) { return ["LARI", "JALAN", "SEPEDA"].includes(value); }
+function validDistance(value) { return ["3 KM", "5 KM", "10 KM", "16 KM", "21 KM", "> 21 KM"].includes(value); }
+function validRegistration(data) {
+  return validUuid(data.event_id) && validUuid(data.keuskupan_id) && validUuid(data.paroki_stasi_id)
+    && cleanNullable(data.nama_strava, 150) && Number.isInteger(Number(data.umur)) && Number(data.umur) > 0 && Number(data.umur) <= 120
+    && cleanNullable(data.periode, 50) && ["INDIVIDU", "KELOMPOK"].includes(data.jenis_pendaftaran)
+    && (data.jenis_pendaftaran !== "KELOMPOK" || cleanNullable(data.nama_kelompok, 150));
+}
+
+app.post("/api/admin/data/registrations", async (request, response, next) => {
+  const d = request.body;
+  if (!validRegistration(d)) return response.status(400).json({ message: "Data peserta tidak valid." });
+  try {
+    const result = await pool.query(`INSERT INTO event_registrations (event_id,nama_strava,umur,nama_wilayah,lingkungan,paroki_stasi_id,keuskupan_id,periode,jenis_pendaftaran,nama_kelompok,perumahan,rt,rw,nama_jalan,desa_kelurahan)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15) RETURNING id`, [d.event_id,cleanNullable(d.nama_strava,150),Number(d.umur),cleanNullable(d.nama_wilayah,150),cleanNullable(d.lingkungan,150),d.paroki_stasi_id,d.keuskupan_id,cleanNullable(d.periode,50),d.jenis_pendaftaran,d.jenis_pendaftaran === "KELOMPOK" ? cleanNullable(d.nama_kelompok,150) : null,cleanNullable(d.perumahan,150),cleanNullable(d.rt,10),cleanNullable(d.rw,10),cleanNullable(d.nama_jalan,255),cleanNullable(d.desa_kelurahan,150)]);
+    response.status(201).json(result.rows[0]);
+  } catch (error) { next(error); }
+});
+app.put("/api/admin/data/registrations/:id", async (request, response, next) => {
+  const d = request.body; if (!validUuid(request.params.id) || !validRegistration(d)) return response.status(400).json({ message: "Data peserta tidak valid." });
+  try { const result = await pool.query(`UPDATE event_registrations SET event_id=$1,nama_strava=$2,umur=$3,nama_wilayah=$4,lingkungan=$5,paroki_stasi_id=$6,keuskupan_id=$7,periode=$8,jenis_pendaftaran=$9,nama_kelompok=$10,perumahan=$11,rt=$12,rw=$13,nama_jalan=$14,desa_kelurahan=$15 WHERE id=$16 RETURNING id`, [d.event_id,cleanNullable(d.nama_strava,150),Number(d.umur),cleanNullable(d.nama_wilayah,150),cleanNullable(d.lingkungan,150),d.paroki_stasi_id,d.keuskupan_id,cleanNullable(d.periode,50),d.jenis_pendaftaran,d.jenis_pendaftaran === "KELOMPOK" ? cleanNullable(d.nama_kelompok,150) : null,cleanNullable(d.perumahan,150),cleanNullable(d.rt,10),cleanNullable(d.rw,10),cleanNullable(d.nama_jalan,255),cleanNullable(d.desa_kelurahan,150),request.params.id]); if (!result.rowCount) return response.sendStatus(404); response.json(result.rows[0]); } catch (error) { next(error); }
+});
+
+async function saveDonation(request, response, next, updating) {
+  const d = request.body; if (!validUuid(d.event_id) || !validActivity(d.aktivitas) || !validDistance(d.jarak) || !Number.isFinite(Number(d.nominal)) || Number(d.nominal) <= 0 || !validStatus(d.status)) return response.status(400).json({ message: "Data donasi tidak valid." });
+  try { const args=[d.event_id,cleanNullable(d.nama_peserta,150),validUuid(d.participant_id) ? d.participant_id : null,d.aktivitas,d.jarak,Number(d.nominal),cleanNullable(d.deskripsi,1000),d.status]; const sql=updating ? `UPDATE event_donations SET event_id=$1,nama_peserta=$2,participant_id=$3,aktivitas=$4,jarak=$5,nominal=$6,deskripsi=$7,status=$8 WHERE id=$9 RETURNING id` : `INSERT INTO event_donations (event_id,nama_peserta,participant_id,aktivitas,jarak,nominal,bukti_transfer_path,deskripsi,status) VALUES ($1,$2,$3,$4,$5,$6,'ADMIN_ENTRY',$7,$8) RETURNING id`; if (updating) args.push(request.params.id); const result=await pool.query(sql,args); if (!result.rowCount) return response.sendStatus(404); response.status(updating ? 200 : 201).json(result.rows[0]); } catch (error) { next(error); }
+}
+app.post("/api/admin/data/donations", (a,b,c) => saveDonation(a,b,c,false));
+app.put("/api/admin/data/donations/:id", (a,b,c) => validUuid(a.params.id) ? saveDonation(a,b,c,true) : b.status(400).json({ message: "ID tidak valid." }));
+
+async function saveSponsor(request, response, next, updating) {
+  const d=request.body; const valid=validUuid(d.event_id)&&validPackage(d.paket)&&cleanNullable(d.nama_perusahaan,150)&&cleanNullable(d.alamat_perusahaan,500)&&cleanNullable(d.nama_produk,150)&&cleanNullable(d.nama_pic,150)&&/^[0-9]{8,15}$/.test(d.no_hp_wa||"")&&cleanNullable(d.nama_rekening_pengirim,150)&&Number(d.nominal)>0&&validStatus(d.status); if (!valid) return response.status(400).json({message:"Data sponsor tidak valid."});
+  try { const args=[d.event_id,d.paket,cleanNullable(d.nama_perusahaan,150),cleanNullable(d.alamat_perusahaan,500),cleanNullable(d.nama_produk,150),cleanNullable(d.nama_pic,150),d.no_hp_wa,cleanNullable(d.nama_rekening_pengirim,150),Number(d.nominal),cleanNullable(d.deskripsi,1000),d.status]; const sql=updating ? `UPDATE company_donations SET event_id=$1,paket=$2,nama_perusahaan=$3,alamat_perusahaan=$4,nama_produk=$5,nama_pic=$6,no_hp_wa=$7,nama_rekening_pengirim=$8,nominal=$9,deskripsi=$10,status=$11 WHERE id=$12 RETURNING id` : `INSERT INTO company_donations (event_id,paket,nama_perusahaan,alamat_perusahaan,nama_produk,nama_pic,no_hp_wa,nama_rekening_pengirim,nominal,logo_path,foto_produk_path,bukti_transfer_path,deskripsi,status) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,'ADMIN_ENTRY','ADMIN_ENTRY','ADMIN_ENTRY',$10,$11) RETURNING id`; if (updating) args.push(request.params.id); const result=await pool.query(sql,args); if (!result.rowCount) return response.sendStatus(404); response.status(updating?200:201).json(result.rows[0]); } catch(error){next(error);}
+}
+app.post("/api/admin/data/sponsors", (a,b,c) => saveSponsor(a,b,c,false));
+app.put("/api/admin/data/sponsors/:id", (a,b,c) => validUuid(a.params.id) ? saveSponsor(a,b,c,true) : b.status(400).json({message:"ID tidak valid."}));
+
+app.post("/api/admin/data/products", async (request,response,next) => { const d=request.body; if (!validUuid(d.company_donation_id)) return response.status(400).json({message:"Sponsor tidak valid."}); try { const r=await pool.query(`INSERT INTO sponsor_product_knowledge (company_donation_id,logo_path,foto_produk_path,deskripsi) SELECT id,logo_path,foto_produk_path,$2 FROM company_donations WHERE id=$1 RETURNING id`,[d.company_donation_id,cleanNullable(d.deskripsi,1000)]); if(!r.rowCount)return response.status(404).json({message:"Sponsor tidak ditemukan."}); response.status(201).json(r.rows[0]); }catch(e){next(e);} });
+app.put("/api/admin/data/products/:id", async (request,response,next) => { if(!validUuid(request.params.id))return response.status(400).json({message:"ID tidak valid."}); try{const r=await pool.query("UPDATE sponsor_product_knowledge SET deskripsi=$1, published_at=NOW() WHERE id=$2 RETURNING id",[cleanNullable(request.body.deskripsi,1000),request.params.id]);if(!r.rowCount)return response.sendStatus(404);response.json(r.rows[0]);}catch(e){next(e);}});
+
+app.delete("/api/admin/data/:type/:id", async (request,response,next) => {
+  const table = { registrations:"event_registrations", donations:"event_donations", sponsors:"company_donations", products:"sponsor_product_knowledge" }[request.params.type];
+  if (!table || !validUuid(request.params.id)) return response.status(400).json({ message:"Data tidak valid." });
+  try { const result=await pool.query(`DELETE FROM ${table} WHERE id=$1 RETURNING id`,[request.params.id]); if(!result.rowCount)return response.sendStatus(404); response.status(204).end(); } catch(error){next(error);}
+});
+
+app.post("/api/admin/events", async (request, response, next) => {
+  const nama = cleanName(request.body.nama);
+  if (!nama || nama.length > 150) return response.status(400).json({ message: "Nama event wajib diisi (maks. 150 karakter)." });
+  try {
+    const result = await pool.query("INSERT INTO events (nama) VALUES ($1) RETURNING id, nama", [nama]);
+    response.status(201).json(result.rows[0]);
+  } catch (error) { next(error); }
+});
+
+app.put("/api/admin/events/:id", async (request, response, next) => {
+  const nama = cleanName(request.body.nama);
+  if (!validUuid(request.params.id) || !nama || nama.length > 150) return response.status(400).json({ message: "Data event tidak valid." });
+  try {
+    const result = await pool.query("UPDATE events SET nama = $1 WHERE id = $2 RETURNING id, nama", [nama, request.params.id]);
+    if (!result.rowCount) return response.status(404).json({ message: "Event tidak ditemukan." });
+    response.json(result.rows[0]);
+  } catch (error) { next(error); }
+});
+
+app.delete("/api/admin/events/:id", async (request, response, next) => {
+  if (!validUuid(request.params.id)) return response.status(400).json({ message: "ID event tidak valid." });
+  try {
+    const result = await pool.query("DELETE FROM events WHERE id = $1 RETURNING id", [request.params.id]);
+    if (!result.rowCount) return response.status(404).json({ message: "Event tidak ditemukan." });
+    response.status(204).end();
+  } catch (error) { next(error); }
+});
+
+app.post("/api/admin/keuskupan", async (request, response, next) => {
+  const nama = cleanName(request.body.nama);
+  if (!nama || nama.length > 150) return response.status(400).json({ message: "Nama keuskupan wajib diisi (maks. 150 karakter)." });
+  try {
+    const result = await pool.query("INSERT INTO keuskupan (nama) VALUES ($1) RETURNING id, nama", [nama]);
+    response.status(201).json(result.rows[0]);
+  } catch (error) { next(error); }
+});
+
+app.put("/api/admin/keuskupan/:id", async (request, response, next) => {
+  const nama = cleanName(request.body.nama);
+  if (!validUuid(request.params.id) || !nama || nama.length > 150) return response.status(400).json({ message: "Data keuskupan tidak valid." });
+  try {
+    const result = await pool.query("UPDATE keuskupan SET nama = $1 WHERE id = $2 RETURNING id, nama", [nama, request.params.id]);
+    if (!result.rowCount) return response.status(404).json({ message: "Keuskupan tidak ditemukan." });
+    response.json(result.rows[0]);
+  } catch (error) { next(error); }
+});
+
+app.delete("/api/admin/keuskupan/:id", async (request, response, next) => {
+  if (!validUuid(request.params.id)) return response.status(400).json({ message: "ID keuskupan tidak valid." });
+  try {
+    const result = await pool.query("DELETE FROM keuskupan WHERE id = $1 RETURNING id", [request.params.id]);
+    if (!result.rowCount) return response.status(404).json({ message: "Keuskupan tidak ditemukan." });
+    response.status(204).end();
+  } catch (error) { next(error); }
+});
+
+app.post("/api/admin/paroki-stasi", async (request, response, next) => {
+  const nama = cleanName(request.body.nama);
+  const tipe = String(request.body.tipe || "").toUpperCase();
+  const keuskupanId = request.body.keuskupan_id;
+  if (!nama || nama.length > 150 || !validUuid(keuskupanId) || !["PAROKI", "STASI"].includes(tipe)) return response.status(400).json({ message: "Data paroki/stasi tidak valid." });
+  try {
+    const result = await pool.query("INSERT INTO paroki_stasi (keuskupan_id, nama, tipe) VALUES ($1, $2, $3) RETURNING id, keuskupan_id, nama, tipe", [keuskupanId, nama, tipe]);
+    response.status(201).json(result.rows[0]);
+  } catch (error) { next(error); }
+});
+
+app.put("/api/admin/paroki-stasi/:id", async (request, response, next) => {
+  const nama = cleanName(request.body.nama);
+  const tipe = String(request.body.tipe || "").toUpperCase();
+  const keuskupanId = request.body.keuskupan_id;
+  if (!validUuid(request.params.id) || !nama || nama.length > 150 || !validUuid(keuskupanId) || !["PAROKI", "STASI"].includes(tipe)) return response.status(400).json({ message: "Data paroki/stasi tidak valid." });
+  try {
+    const result = await pool.query("UPDATE paroki_stasi SET keuskupan_id = $1, nama = $2, tipe = $3 WHERE id = $4 RETURNING id, keuskupan_id, nama, tipe", [keuskupanId, nama, tipe, request.params.id]);
+    if (!result.rowCount) return response.status(404).json({ message: "Paroki/Stasi tidak ditemukan." });
+    response.json(result.rows[0]);
+  } catch (error) { next(error); }
+});
+
+app.delete("/api/admin/paroki-stasi/:id", async (request, response, next) => {
+  if (!validUuid(request.params.id)) return response.status(400).json({ message: "ID paroki/stasi tidak valid." });
+  try {
+    const result = await pool.query("DELETE FROM paroki_stasi WHERE id = $1 RETURNING id", [request.params.id]);
+    if (!result.rowCount) return response.status(404).json({ message: "Paroki/Stasi tidak ditemukan." });
+    response.status(204).end();
+  } catch (error) { next(error); }
 });
 
 app.get("/api/participants", async (request, response, next) => {
@@ -212,9 +421,15 @@ app.post("/api/company-donations", upload.fields([
   }
 });
 
+app.use("/api", (request, response) => response.status(404).json({
+  message: `Endpoint API tidak ditemukan: ${request.method} ${request.originalUrl}`,
+}));
+
 app.use((error, _request, response, _next) => {
   console.error(error);
   if (error instanceof multer.MulterError) return response.status(400).json({ message: "Ukuran bukti transfer maksimal 5 MB." });
+  if (error.code === "23505") return response.status(409).json({ message: "Data dengan nama tersebut sudah ada." });
+  if (error.code === "23503") return response.status(409).json({ message: "Data tidak dapat dihapus karena masih digunakan oleh data lain." });
   response.status(500).json({ message: "Terjadi kesalahan pada server." });
 });
 

@@ -11,7 +11,7 @@ Situs WFF dengan formulir pendaftaran dan API PostgreSQL. Live: https://mellow-m
 ## Menjalankan lokal
 
 1. Salin `.env.example` menjadi `.env`, lalu isi `DATABASE_URL` PostgreSQL.
-2. Pastikan tabel `keuskupan` dan `paroki_stasi` sudah dibuat, lalu jalankan `donations.sql` untuk membuat tabel event baru.
+2. Jalankan `donations.sql` untuk membuat seluruh tabel master dan tabel transaksi.
 3. Jalankan:
 
 ```bash
@@ -30,5 +30,11 @@ Buka `http://localhost:8001`. API yang tersedia:
 - `GET /api/events`
 - `GET /api/paroki-stasi?keuskupan_id=<uuid>`
 - `POST /api/event-registrations`
+
+## Admin
+
+Buka `http://localhost:8001/admin.html` untuk mengelola Event, Keuskupan, Paroki/Stasi, Peserta, Donasi, Sponsor, dan Product Knowledge. Pada versi lokal sederhana ini, dashboard admin tidak memakai login atau API key.
+
+Jangan deploy versi ini ke internet terbuka, karena seluruh endpoint admin dapat diakses tanpa autentikasi.
 
 Catatan: deployment Netlify statis belum dapat menjalankan `server.js`; API perlu dideploy pada layanan Node.js atau Netlify Functions dengan koneksi PostgreSQL yang aman.

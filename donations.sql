@@ -1,5 +1,19 @@
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
+-- Master komunitas. Aman dijalankan pada instalasi baru; tidak mengubah tabel yang sudah ada.
+CREATE TABLE IF NOT EXISTS keuskupan (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  nama VARCHAR(150) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS paroki_stasi (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  keuskupan_id UUID NOT NULL REFERENCES keuskupan(id),
+  nama VARCHAR(150) NOT NULL,
+  tipe VARCHAR(20) NOT NULL CHECK (tipe IN ('PAROKI', 'STASI')),
+  UNIQUE (keuskupan_id, nama, tipe)
+);
+
 CREATE TABLE IF NOT EXISTS events (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   nama VARCHAR(150) NOT NULL UNIQUE,
