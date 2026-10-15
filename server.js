@@ -14,6 +14,8 @@ if (!databaseUrl) {
 
 const pool = new Pool({ connectionString: databaseUrl });
 const uploadDirectory = path.join(__dirname, "uploads");
+const adminBuildDirectory = path.join(__dirname, "admin-dist");
+const webBuildDirectory = path.join(__dirname, "web-dist");
 fs.mkdirSync(uploadDirectory, { recursive: true });
 const upload = multer({
   storage: multer.diskStorage({
@@ -23,14 +25,25 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (_request, file, callback) => callback(null, ["image/jpeg", "image/png", "application/pdf"].includes(file.mimetype)),
 });
+const galleryUpload = multer({
+  storage: multer.diskStorage({
+    destination: uploadDirectory,
+    filename: (_request, file, callback) => callback(null, `gallery-${Date.now()}-${Math.round(Math.random() * 1e9)}${path.extname(file.originalname).toLowerCase()}`),
+  }),
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (_request, file, callback) => callback(null, ["image/jpeg", "image/png", "image/webp"].includes(file.mimetype)),
+});
 
 app.use(express.json());
 app.use("/uploads", (_request, response) => response.status(403).json({ message: "Berkas tidak dapat diakses langsung." }));
 // Route eksplisit agar dashboard tetap tersedia pada deployment yang tidak
 // melakukan static-file fallback secara otomatis.
-app.get("/", (_request, response) => response.sendFile(path.join(__dirname, "index.html")));
-app.get("/admin", (_request, response) => response.redirect(302, "/admin.html"));
-app.get("/admin.html", (_request, response) => response.sendFile(path.join(__dirname, "admin.html")));
+app.get("/", (_request, response) => response.sendFile(path.join(webBuildDirectory, "index.html")));
+app.get("/legacy-home.html", (_request, response) => response.sendFile(path.join(__dirname, "index.html")));
+app.get("/admin", (_request, response) => response.sendFile(path.join(adminBuildDirectory, "index.html")));
+app.get("/admin.html", (_request, response) => response.sendFile(path.join(adminBuildDirectory, "index.html")));
+app.use("/admin-assets", express.static(adminBuildDirectory));
+app.use("/assets", express.static(webBuildDirectory));
 app.use(express.static(__dirname));
 
 app.get("/api/payment-info", (_request, response) => {
@@ -173,6 +186,7 @@ const adminDataQueries = {
   products: `SELECT pk.*, cd.nama_perusahaan, cd.nama_produk, cd.event_id, e.nama AS event_nama
     FROM sponsor_product_knowledge pk JOIN company_donations cd ON cd.id=pk.company_donation_id
     JOIN events e ON e.id=cd.event_id ORDER BY pk.published_at DESC`,
+  gallery: "SELECT id, judul, deskripsi, image_path, created_at FROM gallery_images ORDER BY created_at DESC",
 };
 
 app.get("/api/admin/data/:type", async (request, response, next) => {
@@ -226,6 +240,39 @@ app.put("/api/admin/data/sponsors/:id", (a,b,c) => validUuid(a.params.id) ? save
 
 app.post("/api/admin/data/products", async (request,response,next) => { const d=request.body; if (!validUuid(d.company_donation_id)) return response.status(400).json({message:"Sponsor tidak valid."}); try { const r=await pool.query(`INSERT INTO sponsor_product_knowledge (company_donation_id,logo_path,foto_produk_path,deskripsi) SELECT id,logo_path,foto_produk_path,$2 FROM company_donations WHERE id=$1 RETURNING id`,[d.company_donation_id,cleanNullable(d.deskripsi,1000)]); if(!r.rowCount)return response.status(404).json({message:"Sponsor tidak ditemukan."}); response.status(201).json(r.rows[0]); }catch(e){next(e);} });
 app.put("/api/admin/data/products/:id", async (request,response,next) => { if(!validUuid(request.params.id))return response.status(400).json({message:"ID tidak valid."}); try{const r=await pool.query("UPDATE sponsor_product_knowledge SET deskripsi=$1, published_at=NOW() WHERE id=$2 RETURNING id",[cleanNullable(request.body.deskripsi,1000),request.params.id]);if(!r.rowCount)return response.sendStatus(404);response.json(r.rows[0]);}catch(e){next(e);}});
+
+app.post("/api/admin/gallery", galleryUpload.single("image"), async (request, response, next) => {
+  const judul = cleanNullable(request.body.judul, 150);
+  if (!judul || !request.file) return response.status(400).json({ message: "Judul dan foto galeri wajib diisi." });
+  try {
+    const result = await pool.query("INSERT INTO gallery_images (judul, deskripsi, image_path) VALUES ($1, $2, $3) RETURNING id", [judul, cleanNullable(request.body.deskripsi, 1000), request.file.filename]);
+    response.status(201).json(result.rows[0]);
+  } catch (error) { fs.unlink(request.file.path, () => {}); next(error); }
+});
+
+app.put("/api/admin/gallery/:id", galleryUpload.single("image"), async (request, response, next) => {
+  if (!validUuid(request.params.id)) return response.status(400).json({ message: "Data galeri tidak valid." });
+  const judul = cleanNullable(request.body.judul, 150);
+  if (!judul) return response.status(400).json({ message: "Judul galeri wajib diisi." });
+  try {
+    const old = await pool.query("SELECT image_path FROM gallery_images WHERE id = $1", [request.params.id]);
+    if (!old.rowCount) { if (request.file) fs.unlink(request.file.path, () => {}); return response.sendStatus(404); }
+    const imagePath = request.file ? request.file.filename : old.rows[0].image_path;
+    await pool.query("UPDATE gallery_images SET judul=$1, deskripsi=$2, image_path=$3 WHERE id=$4", [judul, cleanNullable(request.body.deskripsi, 1000), imagePath, request.params.id]);
+    if (request.file && old.rows[0].image_path !== imagePath) fs.unlink(path.join(uploadDirectory, old.rows[0].image_path), () => {});
+    response.json({ id: request.params.id });
+  } catch (error) { if (request.file) fs.unlink(request.file.path, () => {}); next(error); }
+});
+
+app.delete("/api/admin/gallery/:id", async (request, response, next) => {
+  if (!validUuid(request.params.id)) return response.status(400).json({ message: "Data galeri tidak valid." });
+  try {
+    const result = await pool.query("DELETE FROM gallery_images WHERE id=$1 RETURNING image_path", [request.params.id]);
+    if (!result.rowCount) return response.sendStatus(404);
+    fs.unlink(path.join(uploadDirectory, result.rows[0].image_path), () => {});
+    response.status(204).end();
+  } catch (error) { next(error); }
+});
 
 app.delete("/api/admin/data/:type/:id", async (request,response,next) => {
   const table = { registrations:"event_registrations", donations:"event_donations", sponsors:"company_donations", products:"sponsor_product_knowledge" }[request.params.type];
@@ -357,6 +404,22 @@ app.get("/api/product-images/:filename", async (request, response, next) => {
        JOIN company_donations cd ON cd.id = pk.company_donation_id AND cd.status = 'DITERIMA'
        WHERE cd.foto_produk_path = $1`, [filename],
     );
+    if (!result.rowCount) return response.sendStatus(404);
+    response.sendFile(path.join(uploadDirectory, filename));
+  } catch (error) { next(error); }
+});
+
+app.get("/api/gallery", async (_request, response, next) => {
+  try {
+    const result = await pool.query("SELECT id, judul, deskripsi, image_path, created_at FROM gallery_images ORDER BY created_at DESC");
+    response.json(result.rows.map((row) => ({ ...row, image_url: `/api/gallery-images/${encodeURIComponent(row.image_path)}` })));
+  } catch (error) { next(error); }
+});
+
+app.get("/api/gallery-images/:filename", async (request, response, next) => {
+  const filename = path.basename(request.params.filename);
+  try {
+    const result = await pool.query("SELECT 1 FROM gallery_images WHERE image_path = $1", [filename]);
     if (!result.rowCount) return response.sendStatus(404);
     response.sendFile(path.join(uploadDirectory, filename));
   } catch (error) { next(error); }

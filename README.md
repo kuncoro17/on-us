@@ -11,12 +11,42 @@ Situs WFF dengan formulir pendaftaran dan API PostgreSQL. Live: https://mellow-m
 ## Menjalankan lokal
 
 1. Salin `.env.example` menjadi `.env`, lalu isi `DATABASE_URL` PostgreSQL.
-2. Jalankan `donations.sql` untuk membuat seluruh tabel master dan tabel transaksi.
+2. Jalankan migration untuk membuat seluruh tabel master dan tabel transaksi:
+
+```bash
+npm run migrate
+```
 3. Jalankan:
 
 ```bash
 npm install
 npm run dev
+```
+
+## Menjalankan dengan Docker + Redis
+
+Pastikan Docker Desktop aktif, lalu jalankan:
+
+```bash
+docker compose up --build
+```
+
+Aplikasi akan tersedia di `http://localhost:8002`, termasuk dashboard React di
+`http://localhost:8002/admin`. Compose juga menjalankan PostgreSQL dan Redis
+secara otomatis. Data PostgreSQL, Redis, dan unggahan disimpan dalam Docker
+volume sehingga tidak hilang saat container dihentikan.
+Migration akan dijalankan otomatis sebelum aplikasi Docker dimulai.
+
+Untuk menghentikan stack:
+
+```bash
+docker compose down
+```
+
+Untuk menghapus volume data juga:
+
+```bash
+docker compose down -v
 ```
 
 Keuskupan dan Paroki/Stasi wajib dipilih pada formulir.

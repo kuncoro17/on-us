@@ -1,0 +1,9 @@
+node_modules
+admin-dist
+web-dist
+.git
+.env
+uploads
+backups
+outputs
+.DS_Store

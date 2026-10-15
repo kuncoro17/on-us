@@ -525,8 +525,15 @@ button {
   overflow: hidden;
   display: flex;
   align-items: flex-end;
-  padding: 12px;
+  padding: 0;
+  margin: 0;
 }
+
+.gal-item img { width: 100%; height: 100%; object-fit: cover; }
+.gal-item figcaption { position: absolute; inset: auto 0 0; display: grid; gap: 3px; color: #fff; padding: 28px 12px 12px; background: linear-gradient(transparent, rgba(18, 42, 34, .88)); }
+.gal-item figcaption strong { font-size: .9rem; }
+.gal-item figcaption small { font-size: .75rem; color: rgba(255,255,255,.84); }
+.gallery-empty { grid-column: 1 / -1; color: var(--ink-muted); padding: 24px 0; }
 
 .gal-item span {
   font-size: 0.78rem;
