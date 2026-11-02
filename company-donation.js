@@ -6,17 +6,18 @@
   const status = document.getElementById("companyDonationStatus");
   const productList = document.getElementById("productKnowledgeList");
 
+  async function errorMessage(response, fallback) {
+    try { return (await response.json()).message || fallback; } catch (_) { return fallback; }
+  }
+
   async function setup() {
+    paymentInfo.innerHTML = '<img src="payment-qris.jpeg" alt="QRIS PGDP PPG Stasi Sanpera" /><strong>Scan QRIS untuk melakukan donasi</strong>';
     try {
-      const [eventsResponse, paymentResponse] = await Promise.all([fetch("/api/events"), fetch("/api/payment-info")]);
+      const eventsResponse = await fetch("/api/events");
       if (eventsResponse.ok) (await eventsResponse.json()).forEach((row) => {
         const option = document.createElement("option"); option.value = row.id; option.textContent = row.nama; eventSelect.appendChild(option);
       });
-      if (paymentResponse.ok) {
-        const info = await paymentResponse.json();
-        paymentInfo.innerHTML = `${info.qris_image_url ? `<img src="${info.qris_image_url}" alt="QRIS Gereja" />` : ""}<strong>${info.bank_name}</strong><span>${info.account_number}</span><small>a.n. ${info.account_holder}</small><p>${info.instructions || ""}</p>`;
-      }
-    } catch (_) { paymentInfo.textContent = "Informasi pembayaran belum tersedia."; }
+    } catch (_) {}
   }
 
   async function loadProductKnowledge() {
@@ -42,9 +43,9 @@
     status.className = "form-status"; status.textContent = "Mengirim pengajuan sponsor…";
     try {
       const response = await fetch("/api/company-donations", { method: "POST", body: new FormData(form) });
-      if (!response.ok) throw new Error();
-      form.reset(); status.classList.add("success"); status.textContent = "Pengajuan sponsor berhasil dikirim dan menunggu verifikasi panitia.";
-    } catch (_) { status.classList.add("error"); status.textContent = "Pengajuan belum dapat dikirim. Silakan coba lagi."; }
+      if (!response.ok) throw new Error(await errorMessage(response, "Pengajuan belum dapat dikirim."));
+      form.reset(); status.classList.add("success"); status.textContent = "Pengajuan sponsor berhasil diterima. Terima kasih atas dukungan Anda.";
+    } catch (error) { status.classList.add("error"); status.textContent = error.message || "Pengajuan belum dapat dikirim. Silakan coba lagi."; }
     finally { button.disabled = false; }
   });
   setup();

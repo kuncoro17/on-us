@@ -1,5 +1,7 @@
 # WFF — Wilayah Family Fest
 
+Panduan struktur dan aturan perubahan proyek tersedia di [ARCHITECTURE.md](ARCHITECTURE.md).
+
 Situs WFF dengan formulir pendaftaran dan API PostgreSQL. Live: https://mellow-mermaid-279e25.netlify.app/
 
 - `index.html` — landing page
@@ -53,6 +55,16 @@ Keuskupan dan Paroki/Stasi wajib dipilih pada formulir.
 
 Alamat menyimpan RT dan RW pada kolom terpisah: `rt` dan `rw`.
 Data asal komunitas juga mencakup `nama_wilayah` dan `lingkungan`.
+
+## Notifikasi email
+
+Setelah pendaftaran event atau pengajuan donasi berhasil disimpan, WFF dapat
+mengirim email konfirmasi ke alamat yang diisi pengguna. Isi variabel SMTP pada
+`.env` atau secret CI/CD: `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`,
+`SMTP_PASS`, dan `SMTP_FROM`. Contoh tersedia di `.env.example`.
+
+Jika konfigurasi SMTP belum diisi atau pengiriman gagal, pendaftaran/donasi
+tetap tersimpan; kegagalan email hanya dicatat di log server.
 
 Buka `http://localhost:8001`. API yang tersedia:
 

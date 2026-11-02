@@ -11,18 +11,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=20260928" />
+<link rel="stylesheet" href="styles.css?v=20261102" />
 </head>
 <body>
 
 <nav class="site-nav">
   <div class="wrap">
     <a href="#top" class="brand">
-      <svg class="mark" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="16" cy="16" r="15" stroke="#3730A3" stroke-width="2"/>
-        <path d="M8 20 L13 12 L17 17 L21 9 L25 15" stroke="#FF5A36" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      WFF
+      <img class="mark" src="Logo%20SANPERA.png" alt="Logo Gereja Santo Petrus Rasul" />
+      <span>WFF</span>
     </a>
     <ul class="nav-links">
       <li><a href="#program">Program</a></li>
@@ -118,42 +115,42 @@
       <p>Setiap kategori punya paket pendaftaran dan target peserta yang berbeda.</p>
     </div>
     <div class="cat-grid">
-      <div class="cat-card">
+      <a class="cat-card" href="#daftar">
         <span class="tag">Lari</span>
         <h3>Fun Run 5K</h3>
         <p>Rute ramah pemula mengelilingi kompleks paroki, cocok untuk peserta individu maupun keluarga.</p>
         <div class="price">Rp 150.000</div>
-      </div>
-      <div class="cat-card">
+      </a>
+      <a class="cat-card" href="#daftar">
         <span class="tag">Lari</span>
         <h3>Community Run 10K</h3>
         <p>Untuk peserta yang ingin tantangan lebih jauh, dengan pencatatan waktu dan jarak per lingkungan.</p>
         <div class="price">Rp 200.000</div>
-      </div>
-      <div class="cat-card">
+      </a>
+      <a class="cat-card" href="#daftar">
         <span class="tag">Keluarga</span>
         <h3>Jalan Sehat Keluarga</h3>
         <p>Rute pendek 2K, terbuka untuk semua usia, ditutup dengan doa bersama dan pembagian sembako.</p>
         <div class="price">Rp 75.000</div>
-      </div>
-      <div class="cat-card">
+      </a>
+      <a class="cat-card" href="#daftar">
         <span class="tag">Anak</span>
         <h3>Kids Fun Walk</h3>
         <p>Aktivitas ringan untuk anak sekolah minggu, didampingi orang tua atau pendamping lingkungan.</p>
         <div class="price">Rp 50.000</div>
-      </div>
-      <div class="cat-card">
+      </a>
+      <a class="cat-card" href="#daftar">
         <span class="tag">Kelompok</span>
         <h3>Paket Lingkungan</h3>
         <p>Pendaftaran kolektif per lingkungan, minimal 10 peserta, dengan nomor dada bertema lingkungan.</p>
         <div class="price">Rp 130.000 /orang</div>
-      </div>
-      <div class="cat-card">
+      </a>
+      <a class="cat-card" href="#daftar">
         <span class="tag">Virtual</span>
         <h3>Virtual Challenge</h3>
         <p>Bagi umat di luar kota, jarak tempuh dicatat lewat Strava dan tetap dapat medali finisher.</p>
         <div class="price">Rp 120.000</div>
-      </div>
+      </a>
     </div>
   </div>
 </section>
@@ -204,6 +201,10 @@
           <label class="full-width">Nama peserta <span class="optional">(opsional)</span>
             <input name="nama_peserta" type="text" maxlength="150" placeholder="Tulis nama peserta secara manual" />
           </label>
+          <label>
+            Email <span>*</span>
+            <input name="email" type="email" maxlength="254" required placeholder="nama@email.com" />
+          </label>
           <label>Aktivitas <span>*</span>
             <select name="aktivitas" required><option value="">Pilih aktivitas</option><option value="LARI">Lari</option><option value="JALAN">Jalan</option><option value="SEPEDA">Sepeda</option></select>
           </label>
@@ -239,6 +240,7 @@
             <label>Nama produk/jasa <span>*</span><input name="nama_produk" required maxlength="150" /></label>
             <label class="full-width">Alamat perusahaan <span>*</span><textarea name="alamat_perusahaan" rows="2" required maxlength="500"></textarea></label>
             <label>Nama PIC <span>*</span><input name="nama_pic" required maxlength="150" /></label>
+            <label>Email PIC <span>*</span><input name="email" type="email" required maxlength="254" placeholder="pic@perusahaan.com" /></label>
             <label>No. HP / WhatsApp <span>*</span><input name="no_hp_wa" type="text" inputmode="numeric" pattern="[0-9]{8,15}" required maxlength="15" placeholder="08xxxxxxxxxx" title="Gunakan angka saja, 8–15 digit." /></label>
             <label>Nama rekening pengirim <span>*</span><input name="nama_rekening_pengirim" required maxlength="150" /></label>
             <label>Nominal donasi <span>*</span><input name="nominal" type="number" min="1000" step="1000" required /></label>
@@ -264,6 +266,18 @@
       <h2>Galeri dari lapangan</h2>
       <p>Cuplikan momen yang diunggah peserta di setiap aktivitas.</p>
     </div>
+    <section class="slideshow" aria-label="Contoh momen Wilayah Family Fest" aria-roledescription="carousel">
+      <div class="slides">
+        <figure class="slide is-active"><img src="slideshow-assets/wff-family-walk.png" alt="Keluarga berjalan bersama di kegiatan komunitas paroki" /><figcaption><strong>Jalan sehat keluarga</strong><span>Melangkah bersama, lebih dekat satu sama lain.</span></figcaption></figure>
+        <figure class="slide"><img src="slideshow-assets/wff-fun-run.png" alt="Peserta berlari bersama di taman" /><figcaption><strong>Fun run untuk semua</strong><span>Energi positif untuk tubuh dan komunitas.</span></figcaption></figure>
+        <figure class="slide"><img src="slideshow-assets/wff-kids-games.png" alt="Anak-anak bermain permainan estafet di festival keluarga" /><figcaption><strong>Riang bersama si kecil</strong><span>Permainan sederhana, kenangan yang besar.</span></figcaption></figure>
+        <figure class="slide"><img src="slideshow-assets/wff-volunteers.png" alt="Relawan menyiapkan paket makanan untuk acara" /><figcaption><strong>Semangat melayani</strong><span>Semangat melayani untuk sesama.</span></figcaption></figure>
+        <figure class="slide"><img src="slideshow-assets/wff-community.png" alt="Keluarga dan relawan berfoto bersama di halaman paroki" /><figcaption><strong>Satu komunitas, banyak cerita</strong><span>Merayakan kebersamaan lintas generasi.</span></figcaption></figure>
+      </div>
+      <button class="slide-control previous" type="button" aria-label="Foto sebelumnya">‹</button>
+      <button class="slide-control next" type="button" aria-label="Foto berikutnya">›</button>
+      <div class="slide-dots" role="tablist" aria-label="Pilih foto"></div>
+    </section>
     <div class="gal-grid" id="galleryList" aria-live="polite">
       <p class="gallery-empty">Belum ada foto galeri yang diterbitkan.</p>
     </div>
@@ -324,6 +338,10 @@
         <label>
           Nama Strava <span>*</span>
           <input name="nama_strava" type="text" required maxlength="150" placeholder="contoh: wff_runner" />
+        </label>
+        <label>
+          Email <span>*</span>
+          <input name="email" type="email" required maxlength="254" placeholder="nama@email.com" />
         </label>
         <label>
           Umur <span>*</span>

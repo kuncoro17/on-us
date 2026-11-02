@@ -26,15 +26,21 @@
   }
 
   function resetParishSelect() {
-    parishSelect.innerHTML = '<option value="">Pilih paroki atau stasi</option>';
+    parishSelect.disabled = true;
+    parishSelect.innerHTML = '<option value="">Pilih keuskupan terlebih dahulu</option>';
   }
 
   async function loadParishes(dioceseId = "") {
     resetParishSelect();
-    const query = dioceseId ? `?keuskupan_id=${encodeURIComponent(dioceseId)}` : "";
+    if (!dioceseId) return;
+    parishSelect.innerHTML = '<option value="">Memuat paroki atau stasi…</option>';
+    const query = `?keuskupan_id=${encodeURIComponent(dioceseId)}`;
     const response = await fetch(`/api/paroki-stasi${query}`);
     if (!response.ok) throw new Error("Paroki/Stasi tidak dapat dimuat.");
-    appendOptions(parishSelect, await response.json(), (row) => `${row.nama} (${row.tipe})`);
+    const rows = await response.json();
+    parishSelect.disabled = false;
+    parishSelect.innerHTML = rows.length ? '<option value="">Pilih paroki atau stasi</option>' : '<option value="">Belum ada paroki atau stasi untuk keuskupan ini</option>';
+    appendOptions(parishSelect, rows, (row) => `${row.nama} (${row.tipe})`);
   }
 
   async function loadMasterData() {
@@ -48,7 +54,7 @@
       appendOptions(eventSelect, await eventsResponse.json(), (row) => row.nama);
       syncEventCopy();
       appendOptions(dioceseSelect, await diocesesResponse.json(), (row) => row.nama);
-      await loadParishes();
+      resetParishSelect();
     } catch (_) {
       // Form tetap dapat digunakan bila master data belum tersedia.
     }
@@ -80,7 +86,10 @@
   churchAccount.addEventListener("change", syncConditionalFields);
   eventSelect.addEventListener("change", syncEventCopy);
   dioceseSelect.addEventListener("change", () => {
-    loadParishes(dioceseSelect.value).catch(() => resetParishSelect());
+    loadParishes(dioceseSelect.value).catch(() => {
+      parishSelect.disabled = true;
+      parishSelect.innerHTML = '<option value="">Paroki/Stasi tidak dapat dimuat</option>';
+    });
   });
   syncConditionalFields();
   syncEventCopy();

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 
-const formScripts = ["/nav.js", "/registration.js", "/donation.js", "/company-donation.js", "/gallery.js"];
+const formScripts = ["/nav.js", "/registration.js", "/donation.js", "/company-donation.js", "/gallery.js", "/slideshow.js"];
 
 function App() {
   const [markup, setMarkup] = useState("");

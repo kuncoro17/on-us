@@ -2,6 +2,8 @@ const express = require("express");
 const path = require("path");
 const fs = require("fs");
 const multer = require("multer");
+const nodemailer = require("nodemailer");
+const crypto = require("crypto");
 const { Pool } = require("pg");
 
 const app = express();
@@ -13,6 +15,13 @@ if (!databaseUrl) {
 }
 
 const pool = new Pool({ connectionString: databaseUrl });
+const smtpEnabled = Boolean(process.env.SMTP_HOST && process.env.SMTP_FROM);
+const mailer = smtpEnabled ? nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT || 587),
+  secure: String(process.env.SMTP_SECURE).toLowerCase() === "true",
+  auth: process.env.SMTP_USER ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS } : undefined,
+}) : null;
 const uploadDirectory = path.join(__dirname, "uploads");
 const adminBuildDirectory = path.join(__dirname, "admin-dist");
 const webBuildDirectory = path.join(__dirname, "web-dist");
@@ -35,6 +44,14 @@ const galleryUpload = multer({
 });
 
 app.use(express.json());
+const sessionSecret = process.env.SESSION_SECRET;
+function cookies(request) { return Object.fromEntries(String(request.headers.cookie || "").split(";").map((v) => v.trim().split("=")).filter(([k]) => k)); }
+function issueSession(response, user) { const payload = Buffer.from(JSON.stringify({ id: user.id, email: user.email, role: user.role, exp: Date.now() + 8 * 60 * 60 * 1000 })).toString("base64url"); const signature = crypto.createHmac("sha256", sessionSecret).update(payload).digest("base64url"); response.setHeader("Set-Cookie", `wff_admin_session=${payload}.${signature}; HttpOnly; SameSite=Lax; Path=/; Max-Age=28800${process.env.NODE_ENV === "production" ? "; Secure" : ""}`); }
+function requireAdmin(request, response, next) { if (!sessionSecret) return response.status(503).json({ message: "SESSION_SECRET belum diatur." }); const token = cookies(request).wff_admin_session || ""; const [payload, signature] = token.split("."); const expected = crypto.createHmac("sha256", sessionSecret).update(payload || "").digest("base64url"); if (!payload || !signature || signature.length !== expected.length || !crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) return response.status(401).json({ message: "Silakan masuk dengan Google." }); try { const user = JSON.parse(Buffer.from(payload, "base64url").toString()); if (user.exp < Date.now() || user.role !== "ADMIN") throw new Error(); request.user = user; next(); } catch (_) { response.status(401).json({ message: "Sesi sudah berakhir." }); } }
+app.get("/auth/google", (request, response) => { if (!process.env.GOOGLE_CLIENT_ID || !sessionSecret) return response.status(503).send("Google OAuth belum dikonfigurasi."); const state = crypto.randomBytes(24).toString("hex"); response.setHeader("Set-Cookie", `wff_google_state=${state}; HttpOnly; SameSite=Lax; Path=/; Max-Age=600`); response.redirect(`https://accounts.google.com/o/oauth2/v2/auth?${new URLSearchParams({ client_id: process.env.GOOGLE_CLIENT_ID, redirect_uri: process.env.GOOGLE_REDIRECT_URI || `${request.protocol}://${request.get("host")}/auth/google/callback`, response_type: "code", scope: "openid email profile", state })}`); });
+app.get("/auth/google/callback", async (request, response) => { try { if (!request.query.code || request.query.state !== cookies(request).wff_google_state) throw new Error("Login Google tidak valid."); const redirectUri = process.env.GOOGLE_REDIRECT_URI || `${request.protocol}://${request.get("host")}/auth/google/callback`; const token = await fetch("https://oauth2.googleapis.com/token", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ code: request.query.code, client_id: process.env.GOOGLE_CLIENT_ID, client_secret: process.env.GOOGLE_CLIENT_SECRET, redirect_uri: redirectUri, grant_type: "authorization_code" }) }).then((r) => r.ok ? r.json() : Promise.reject()); const profile = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${token.access_token}` } }).then((r) => r.ok ? r.json() : Promise.reject()); const result = await pool.query("SELECT id, email, role FROM users WHERE LOWER(email)=LOWER($1) AND is_active=TRUE", [profile.email]); if (!profile.email_verified || !result.rowCount) return response.status(403).send("Email Google Anda belum diberi akses Admin."); issueSession(response, result.rows[0]); response.redirect("/admin"); } catch (_) { response.status(401).send("Login Google gagal."); } });
+app.post("/auth/logout", (_request, response) => { response.setHeader("Set-Cookie", "wff_admin_session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0"); response.sendStatus(204); });
+app.get("/api/admin/session", requireAdmin, (request, response) => response.json({ user: request.user }));
 app.use("/uploads", (_request, response) => response.status(403).json({ message: "Berkas tidak dapat diakses langsung." }));
 // Route eksplisit agar dashboard tetap tersedia pada deployment yang tidak
 // melakukan static-file fallback secara otomatis.
@@ -96,11 +113,23 @@ function cleanName(value) {
   return String(value || "").trim().replace(/\s+/g, " ");
 }
 
+function cleanEmail(value) {
+  const email = String(value || "").trim().toLowerCase();
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 254 ? email : null;
+}
+
+function sendNotification({ to, subject, lines }) {
+  if (!mailer || !to) return;
+  mailer.sendMail({ from: process.env.SMTP_FROM, to, subject, text: lines.join("\n") })
+    .catch((error) => console.error("Email notifikasi gagal dikirim:", error.message));
+}
+
 function validUuid(value) {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(value));
 }
 
 // Admin lokal sederhana: endpoint dibiarkan terbuka selama pengembangan.
+app.use("/api/admin", requireAdmin);
 app.get("/api/admin/masters", async (_request, response, next) => {
   try {
     const [events, dioceses, parishes] = await Promise.all([
@@ -178,6 +207,7 @@ app.get("/api/admin/paroki-stasi", async (_request, response, next) => {
 // Data operasional untuk dashboard panitia. Endpoint ini sengaja dipisahkan dari
 // endpoint publik agar informasi peserta dan bukti pembayaran tidak terekspos.
 const adminDataQueries = {
+  users: "SELECT id, nama, email, role, is_active, created_at FROM users ORDER BY created_at DESC",
   registrations: `SELECT r.*, e.nama AS event_nama, k.nama AS keuskupan_nama, ps.nama AS paroki_stasi_nama
     FROM event_registrations r JOIN events e ON e.id=r.event_id JOIN keuskupan k ON k.id=r.keuskupan_id
     JOIN paroki_stasi ps ON ps.id=r.paroki_stasi_id ORDER BY r.created_at DESC`,
@@ -188,6 +218,9 @@ const adminDataQueries = {
     JOIN events e ON e.id=cd.event_id ORDER BY pk.published_at DESC`,
   gallery: "SELECT id, judul, deskripsi, image_path, created_at FROM gallery_images ORDER BY created_at DESC",
 };
+
+app.post("/api/admin/data/users", async (request, response, next) => { const d=request.body; const email=cleanEmail(d.email); if(!email) return response.status(400).json({message:"Email Gmail tidak valid."}); try { const r=await pool.query("INSERT INTO users (nama,email,role,is_active) VALUES ($1,$2,'ADMIN',$3) RETURNING id",[cleanNullable(d.nama,150),email,String(d.is_active)!=="false"]); response.status(201).json(r.rows[0]); } catch(e){next(e);} });
+app.put("/api/admin/data/users/:id", async (request,response,next) => { const d=request.body; const email=cleanEmail(d.email); if(!validUuid(request.params.id)||!email)return response.status(400).json({message:"Data pengguna tidak valid."}); try { const r=await pool.query("UPDATE users SET nama=$1,email=$2,role='ADMIN',is_active=$3 WHERE id=$4 RETURNING id",[cleanNullable(d.nama,150),email,String(d.is_active)!=="false",request.params.id]);if(!r.rowCount)return response.sendStatus(404);response.json(r.rows[0]);}catch(e){next(e);}});
 
 app.get("/api/admin/data/:type", async (request, response, next) => {
   const query = adminDataQueries[request.params.type];
@@ -275,7 +308,7 @@ app.delete("/api/admin/gallery/:id", async (request, response, next) => {
 });
 
 app.delete("/api/admin/data/:type/:id", async (request,response,next) => {
-  const table = { registrations:"event_registrations", donations:"event_donations", sponsors:"company_donations", products:"sponsor_product_knowledge" }[request.params.type];
+  const table = { users:"users", registrations:"event_registrations", donations:"event_donations", sponsors:"company_donations", products:"sponsor_product_knowledge" }[request.params.type];
   if (!table || !validUuid(request.params.id)) return response.status(400).json({ message:"Data tidak valid." });
   try { const result=await pool.query(`DELETE FROM ${table} WHERE id=$1 RETURNING id`,[request.params.id]); if(!result.rowCount)return response.sendStatus(404); response.status(204).end(); } catch(error){next(error);}
 });
@@ -437,8 +470,9 @@ app.post("/api/event-registrations", async (request, response, next) => {
     "paroki_stasi_id",
   ];
   const missing = required.filter((key) => !data[key]);
+  const email = cleanEmail(data.email);
 
-  if (missing.length || !["INDIVIDU", "KELOMPOK"].includes(data.jenis_pendaftaran)) {
+  if (missing.length || !email || !["INDIVIDU", "KELOMPOK"].includes(data.jenis_pendaftaran)) {
     return response.status(400).json({ message: "Data pendaftaran tidak valid." });
   }
   if (data.jenis_pendaftaran === "KELOMPOK" && !data.nama_kelompok) {
@@ -450,9 +484,9 @@ app.post("/api/event-registrations", async (request, response, next) => {
       `INSERT INTO event_registrations (
         event_id, nama_strava, umur, nama_wilayah, lingkungan, paroki_stasi_id, keuskupan_id,
         periode, jenis_pendaftaran, nama_kelompok, perumahan, rt, rw,
-        nama_jalan, desa_kelurahan
+        nama_jalan, desa_kelurahan, email
       ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16
       ) RETURNING id, created_at`,
       [
         data.event_id,
@@ -470,8 +504,11 @@ app.post("/api/event-registrations", async (request, response, next) => {
         data.rw || null,
         data.nama_jalan || null,
         data.desa_kelurahan || null,
+        email,
       ],
     );
+    const event = await pool.query("SELECT nama FROM events WHERE id = $1", [data.event_id]);
+    sendNotification({ to: email, subject: "Pendaftaran WFF berhasil diterima", lines: ["Halo " + data.nama_strava + ",", "", "Pendaftaran Anda untuk " + (event.rows[0]?.nama || "event WFF") + " telah berhasil diterima.", "Panitia akan menghubungi Anda bila ada informasi lanjutan.", "", "Terima kasih,", "Wilayah Family Fest"] });
     response.status(201).json(result.rows[0]);
   } catch (error) {
     next(error);
@@ -480,15 +517,18 @@ app.post("/api/event-registrations", async (request, response, next) => {
 
 app.post("/api/donations", upload.single("bukti_transfer"), async (request, response, next) => {
   const data = request.body;
-  if (!request.file || !data.event_id || !data.aktivitas || !data.jarak || !Number.isFinite(Number(data.nominal)) || Number(data.nominal) <= 0) {
+  const email = cleanEmail(data.email);
+  if (!request.file || !email || !data.event_id || !data.aktivitas || !data.jarak || !Number.isFinite(Number(data.nominal)) || Number(data.nominal) <= 0) {
     return response.status(400).json({ message: "Data donasi belum lengkap." });
   }
   try {
     const result = await pool.query(
-      `INSERT INTO event_donations (event_id, nama_peserta, aktivitas, jarak, nominal, metode_pembayaran, bukti_transfer_path, deskripsi)
-       VALUES ($1, $2, $3, $4, $5, 'TRANSFER', $6, $7) RETURNING id, status`,
-      [data.event_id, data.nama_peserta || null, data.aktivitas, data.jarak, data.nominal, request.file.filename, data.deskripsi || null],
+      `INSERT INTO event_donations (event_id, nama_peserta, email, aktivitas, jarak, nominal, metode_pembayaran, bukti_transfer_path, deskripsi)
+       VALUES ($1, $2, $3, $4, $5, $6, 'TRANSFER', $7, $8) RETURNING id, status`,
+      [data.event_id, data.nama_peserta || null, email, data.aktivitas, data.jarak, data.nominal, request.file.filename, data.deskripsi || null],
     );
+    const event = await pool.query("SELECT nama FROM events WHERE id = $1", [data.event_id]);
+    sendNotification({ to: email, subject: "Donasi WFF berhasil diterima", lines: ["Halo " + (data.nama_peserta || "Donatur") + ",", "", "Donasi Anda untuk " + (event.rows[0]?.nama || "event WFF") + " telah berhasil diterima.", "Nominal: Rp " + Number(data.nominal).toLocaleString("id-ID") + ".", "", "Terima kasih atas kontribusi Anda.", "Wilayah Family Fest"] });
     response.status(201).json(result.rows[0]);
   } catch (error) {
     fs.unlink(request.file.path, () => {});
@@ -504,17 +544,20 @@ app.post("/api/company-donations", upload.fields([
   const data = request.body;
   const files = request.files || {};
   const required = ["event_id", "paket", "nama_perusahaan", "alamat_perusahaan", "nama_produk", "nama_pic", "no_hp_wa", "nama_rekening_pengirim", "nominal"];
-  if (required.some((key) => !data[key]) || !/^[0-9]{8,15}$/.test(data.no_hp_wa) || !Number.isFinite(Number(data.nominal)) || Number(data.nominal) <= 0 || !files.logo_perusahaan?.[0] || !files.foto_produk?.[0] || !files.bukti_transfer?.[0]) {
+  const email = cleanEmail(data.email);
+  if (required.some((key) => !data[key]) || !email || !/^[0-9]{8,15}$/.test(data.no_hp_wa) || !Number.isFinite(Number(data.nominal)) || Number(data.nominal) <= 0 || !files.logo_perusahaan?.[0] || !files.foto_produk?.[0] || !files.bukti_transfer?.[0]) {
     return response.status(400).json({ message: "Data sponsor belum lengkap." });
   }
   try {
     const result = await pool.query(
       `INSERT INTO company_donations (
         event_id, paket, nama_perusahaan, alamat_perusahaan, nama_produk, nama_pic, no_hp_wa,
-        nama_rekening_pengirim, nominal, logo_path, foto_produk_path, bukti_transfer_path, deskripsi
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id, status`,
-      [data.event_id, data.paket, data.nama_perusahaan, data.alamat_perusahaan, data.nama_produk, data.nama_pic, data.no_hp_wa, data.nama_rekening_pengirim, data.nominal, files.logo_perusahaan[0].filename, files.foto_produk[0].filename, files.bukti_transfer[0].filename, data.deskripsi || null],
+        nama_rekening_pengirim, nominal, logo_path, foto_produk_path, bukti_transfer_path, deskripsi, email
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id, status`,
+      [data.event_id, data.paket, data.nama_perusahaan, data.alamat_perusahaan, data.nama_produk, data.nama_pic, data.no_hp_wa, data.nama_rekening_pengirim, data.nominal, files.logo_perusahaan[0].filename, files.foto_produk[0].filename, files.bukti_transfer[0].filename, data.deskripsi || null, email],
     );
+    const event = await pool.query("SELECT nama FROM events WHERE id = $1", [data.event_id]);
+    sendNotification({ to: email, subject: "Donasi perusahaan WFF berhasil diterima", lines: ["Halo " + data.nama_pic + ",", "", "Pengajuan donasi dari " + data.nama_perusahaan + " untuk " + (event.rows[0]?.nama || "event WFF") + " telah berhasil diterima.", "", "Terima kasih atas dukungan Anda.", "Wilayah Family Fest"] });
     response.status(201).json(result.rows[0]);
   } catch (error) {
     Object.values(files).flat().forEach((file) => fs.unlink(file.path, () => {}));

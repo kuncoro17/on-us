@@ -6,6 +6,10 @@
   const paymentInfo = document.getElementById("paymentInfo");
   const status = document.getElementById("donationStatus");
 
+  async function errorMessage(response, fallback) {
+    try { return (await response.json()).message || fallback; } catch (_) { return fallback; }
+  }
+
   function appendOptions(rows) {
     rows.forEach((row) => {
       const option = document.createElement("option");
@@ -16,14 +20,11 @@
   }
 
   async function loadInitialData() {
+    paymentInfo.innerHTML = '<img src="payment-qris.jpeg" alt="QRIS PGDP PPG Stasi Sanpera" /><strong>Scan QRIS untuk melakukan donasi</strong>';
     try {
-      const [eventsResponse, paymentResponse] = await Promise.all([fetch("/api/events"), fetch("/api/payment-info")]);
+      const eventsResponse = await fetch("/api/events");
       if (eventsResponse.ok) appendOptions(await eventsResponse.json());
-      if (paymentResponse.ok) {
-        const info = await paymentResponse.json();
-        paymentInfo.innerHTML = `${info.qris_image_url ? `<img src="${info.qris_image_url}" alt="QRIS Gereja" />` : ""}<strong>${info.bank_name}</strong><span>${info.account_number}</span><small>a.n. ${info.account_holder}</small>${info.instructions ? `<p>${info.instructions}</p>` : ""}`;
-      } else paymentInfo.textContent = "Informasi pembayaran belum tersedia.";
-    } catch (_) { paymentInfo.textContent = "Informasi pembayaran belum tersedia."; }
+    } catch (_) {}
   }
 
   form.addEventListener("submit", async (event) => {
@@ -33,10 +34,10 @@
     button.disabled = true; status.className = "form-status"; status.textContent = "Mengirim donasi…";
     try {
       const response = await fetch("/api/donations", { method: "POST", body: new FormData(form) });
-      if (!response.ok) throw new Error();
+      if (!response.ok) throw new Error(await errorMessage(response, "Donasi belum dapat dikirim."));
       form.reset();
-      status.classList.add("success"); status.textContent = "Donasi berhasil dikirim dan menunggu verifikasi panitia.";
-    } catch (_) { status.classList.add("error"); status.textContent = "Donasi belum dapat dikirim. Periksa kembali data dan coba lagi."; }
+      status.classList.add("success"); status.textContent = "Donasi berhasil diterima. Terima kasih atas kontribusi Anda.";
+    } catch (error) { status.classList.add("error"); status.textContent = error.message || "Donasi belum dapat dikirim. Periksa kembali data dan coba lagi."; }
     finally { button.disabled = false; }
   });
   loadInitialData();

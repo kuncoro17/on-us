@@ -11,6 +11,12 @@ services:
       CHURCH_BANK_ACCOUNT: ${CHURCH_BANK_ACCOUNT:-Belum diatur}
       CHURCH_ACCOUNT_HOLDER: ${CHURCH_ACCOUNT_HOLDER:-Panitia WFF}
       PAYMENT_INSTRUCTIONS: ${PAYMENT_INSTRUCTIONS:-Transfer sesuai nominal donasi, lalu unggah bukti transfer.}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      SMTP_FROM: ${SMTP_FROM:-}
     depends_on:
       postgres:
         condition: service_healthy
